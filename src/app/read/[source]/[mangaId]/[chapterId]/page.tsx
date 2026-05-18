@@ -119,7 +119,7 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
   };
 
   return (
-    <div className="min-h-screen bg-[#030306] flex flex-col items-center relative select-none">
+    <div className="min-h-screen bg-[#07090e] flex flex-col items-center relative select-none">
       
       {/* 1. FLOATING CONTROL HUD BAR (Top & Bottom) */}
       <div 
@@ -139,7 +139,7 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
             <h1 className="text-sm font-black text-white truncate max-w-[180px] sm:max-w-[280px]">
               Chương {chapNum}
             </h1>
-            <span className="text-[10px] text-purple-400 font-bold tracking-wider uppercase">
+            <span className="text-[10px] text-[#c5a880] font-bold tracking-wider uppercase">
               Nguồn: {source === 'vn' ? 'VNmanga' : 'Global'}
             </span>
           </div>
@@ -193,25 +193,25 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
       >
         {loading ? (
           <div className="flex flex-col gap-6 w-full py-4 px-4 md:px-0">
-            <div className="w-full h-[600px] rounded-xl border border-white/5 skeleton-shimmer flex items-center justify-center relative overflow-hidden">
-              <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase animate-pulse">Kích hoạt trang số 1...</span>
+            <div className="w-full h-[600px] rounded-xl border border-white/[0.04] skeleton-shimmer flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase animate-pulse">Đang tải trang số 1...</span>
             </div>
-            <div className="w-full h-[600px] rounded-xl border border-white/5 skeleton-shimmer flex items-center justify-center relative overflow-hidden">
-              <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase animate-pulse">Đang giải mã CDN trang số 2...</span>
+            <div className="w-full h-[600px] rounded-xl border border-white/[0.04] skeleton-shimmer flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase animate-pulse">Đang giải mã dữ liệu trang số 2...</span>
             </div>
-            <div className="w-full h-[600px] rounded-xl border border-white/5 skeleton-shimmer flex items-center justify-center relative overflow-hidden">
-              <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase animate-pulse">Tải trước trang số 3...</span>
+            <div className="w-full h-[600px] rounded-xl border border-white/[0.04] skeleton-shimmer flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] text-slate-500 font-mono tracking-widest uppercase animate-pulse">Tải trước nội dung trang số 3...</span>
             </div>
           </div>
         ) : pages.length === 0 ? (
-          <div className="py-32 text-center text-red-400 font-bold text-sm bg-white/5 border border-white/5 rounded-2xl mx-4">
+          <div className="py-32 text-center text-red-400 font-bold text-sm bg-white/[0.02] border border-white/[0.04] rounded-2xl mx-4">
             Không tìm thấy trang truyện. Máy chủ CDN có thể bị lỗi, vui lòng quay lại sau!
           </div>
         ) : (
           pages.map((imgUrl, index) => (
             <div 
               key={index}
-              className="relative w-full bg-[#030306] overflow-hidden min-h-[400px] md:min-h-[600px] flex items-center justify-center"
+              className="relative w-full bg-[#07090e] overflow-hidden min-h-[400px] md:min-h-[600px] flex items-center justify-center"
             >
               {/* Lazy skeleton screen underneath */}
               <div className="absolute inset-0 skeleton-shimmer flex items-center justify-center">
@@ -234,7 +234,7 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
       {!hudVisible && (
         <button 
           onClick={() => setHudVisible(true)}
-          className="fixed bottom-6 right-6 p-3 bg-purple-600/90 text-white rounded-full shadow-[0_0_15px_#8a2be2] border border-white/10 hover:scale-105 active:scale-95 transition-all z-50 flex items-center justify-center"
+          className="fixed bottom-6 right-6 p-3 bg-[#c5a880] text-[#07090e] rounded-full shadow-[0_8px_25px_rgba(197,168,128,0.25)] border border-[#c5a880]/30 hover:scale-105 active:scale-95 transition-all z-50 flex items-center justify-center cursor-pointer"
           title="Hiện giao diện HUD"
         >
           <Eye className="h-5 w-5" />
@@ -244,18 +244,18 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
       {/* 4. CHAPTER NAVIGATION END HUD */}
       {!loading && pages.length > 0 && (
         <div className="w-full max-w-lg mb-20 px-4 flex flex-col gap-4 text-center mt-6">
-          <div className="bg-white/5 border border-white/5 rounded-2xl p-6 glass-panel">
-            <h3 className="font-extrabold text-sm text-gray-200 mb-2">BẠN ĐÃ ĐỌC XONG CHƯƠNG {chapNum}</h3>
-            <p className="text-xs text-gray-500 mb-6">Nền tảng tự động lưu lại vị trí và tiến trình đọc của bạn.</p>
+          <div className="bg-white/[0.02] border border-white/[0.04] rounded-2xl p-6 glass-panel">
+            <h3 className="font-extrabold text-sm text-slate-200 mb-2">BẠN ĐÃ ĐỌC XONG CHƯƠNG {chapNum}</h3>
+            <p className="text-xs text-slate-500 mb-6">Nền tảng tự động lưu lại vị trí và tiến trình đọc của bạn.</p>
 
             <div className="flex items-center justify-center gap-3">
               <button
                 onClick={handlePrevChapter}
                 disabled={!prevChapter}
-                className={`flex-1 py-2 rounded-xl text-xs font-extrabold border transition-all ${
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all ${
                   prevChapter 
-                    ? 'bg-white/5 hover:bg-white/10 text-white border-white/10 cursor-pointer' 
-                    : 'text-gray-600 border-white/5 cursor-not-allowed'
+                    ? 'bg-white/[0.02] hover:bg-white/[0.06] text-white border-white/[0.06] hover:border-[#c5a880]/30 cursor-pointer' 
+                    : 'text-slate-600 border-white/[0.04] cursor-not-allowed'
                 }`}
               >
                 Chương Trước
@@ -264,10 +264,10 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
               <button
                 onClick={handleNextChapter}
                 disabled={!nextChapter}
-                className={`flex-1 py-2 rounded-xl text-xs font-black border transition-all ${
+                className={`flex-1 py-2.5 rounded-xl text-xs font-bold border transition-all ${
                   nextChapter 
-                    ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-500/20 shadow-[0_0_15px_rgba(138,43,226,0.3)] cursor-pointer' 
-                    : 'text-gray-600 border-white/5 cursor-not-allowed'
+                    ? 'bg-gradient-to-r from-[#c5a880] to-[#b59250] text-[#07090e] border-[#c5a880]/20 hover:shadow-[0_8px_25px_rgba(197,168,128,0.2)] cursor-pointer' 
+                    : 'text-slate-600 border-white/[0.04] cursor-not-allowed'
                 }`}
               >
                 Chương Sau
@@ -276,7 +276,7 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
             
             <Link 
               href={`/manga/${source}/${mangaId}`}
-              className="block mt-4 text-[10px] font-bold text-purple-400 hover:text-white transition uppercase tracking-wider"
+              className="block mt-4 text-[10px] font-bold text-[#c5a880] hover:text-white transition uppercase tracking-wider"
             >
               Quay lại danh mục truyện
             </Link>
@@ -295,8 +295,8 @@ export default function ReaderPage({ params }: { params: Promise<{ source: strin
 
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#030306] flex items-center justify-center">
-        <div className="text-purple-500 font-bold animate-pulse text-xs tracking-wider">Đang khởi tạo máy đọc an toàn...</div>
+      <div className="min-h-screen bg-[#07090e] flex items-center justify-center">
+        <div className="text-[#c5a880] font-bold animate-pulse text-xs uppercase tracking-widest">Đang tải trình đọc truyện...</div>
       </div>
     }>
       <ReaderContent source={source} mangaId={mangaId} chapterId={decodeURIComponent(chapterId)} />

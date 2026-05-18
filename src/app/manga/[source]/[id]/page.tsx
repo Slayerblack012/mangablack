@@ -265,8 +265,8 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
       <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full relative z-10">
         
         {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-xs font-bold text-gray-500 mb-8 uppercase tracking-wider text-left">
-          <Link href="/" className="hover:text-purple-400 transition">Trang Chủ</Link>
+        <div className="flex items-center gap-2 text-xs font-bold text-slate-500 mb-8 uppercase tracking-wider text-left">
+          <Link href="/" className="hover:text-[#c5a880] transition">Trang Chủ</Link>
           <span>/</span>
           <span className="text-gray-400 truncate max-w-[200px]">{manga.title}</span>
         </div>
@@ -291,8 +291,8 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
                 onClick={toggleFavorite}
                 className={`w-full py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition-all ${
                   isFavorite 
-                    ? 'bg-pink-600/80 hover:bg-pink-700/80 text-white border border-pink-500/30 shadow-[0_0_15px_rgba(236,72,153,0.3)]' 
-                    : 'bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/10'
+                    ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white border border-rose-500/30 shadow-[0_4px_15px_rgba(225,29,72,0.2)]' 
+                    : 'bg-white/[0.02] hover:bg-white/[0.06] text-slate-300 hover:text-white border border-white/[0.05] hover:border-[#c5a880]/30'
                 }`}
               >
                 <Bookmark className={`h-4 w-4 ${isFavorite ? 'fill-white' : ''}`} />
@@ -302,14 +302,14 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
               {lastReadChapter ? (
                 <Link 
                   href={`/read/${source}/${id}/${encodeURIComponent(lastReadChapter.id)}?chapNum=${lastReadChapter.num}`}
-                  className="w-full py-2.5 rounded-xl text-xs font-black bg-cyan-600/90 hover:bg-cyan-700/90 text-white border border-cyan-500/30 flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(6,182,212,0.3)] transition"
+                  className="w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-[#c5a880] to-[#b59250] text-[#07090e] border border-[#c5a880]/20 flex items-center justify-center gap-1.5 shadow-md hover:shadow-[0_8px_25px_rgba(197,168,128,0.2)] transition-all hover:scale-[1.01] active:scale-[0.99]"
                 >
-                  <BookOpen className="h-4 w-4 animate-bounce" /> Tiếp Tục Đọc Chap {lastReadChapter.num}
+                  <BookOpen className="h-4 w-4 animate-pulse" /> Tiếp Tục Đọc Chap {lastReadChapter.num}
                 </Link>
               ) : chapters.length > 0 ? (
                 <Link 
                   href={`/read/${source}/${id}/${encodeURIComponent(chapters[chapters.length - 1].id)}?chapNum=${chapters[chapters.length - 1].chapter}`}
-                  className="w-full py-2.5 rounded-xl text-xs font-black bg-purple-600/90 hover:bg-purple-700/90 text-white border border-purple-500/30 flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(138,43,226,0.3)] transition"
+                  className="w-full py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 to-violet-600 text-white border border-indigo-500/20 flex items-center justify-center gap-1.5 shadow-md hover:shadow-[0_8px_25px_rgba(99,102,241,0.2)] transition-all hover:scale-[1.01] active:scale-[0.99]"
                 >
                   <BookOpen className="h-4 w-4" /> Đọc Từ Chương Đầu
                 </Link>
@@ -323,48 +323,48 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
             {/* Header info */}
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <span className="bg-purple-500/15 border border-purple-500/35 text-purple-300 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
+                <span className="bg-[#c5a880]/10 border border-[#c5a880]/20 text-[#c5a880] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                   Nguồn: {source === 'vn' ? 'VNmanga' : 'Global'}
                 </span>
-                <span className="bg-white/5 border border-white/5 text-gray-400 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
+                <span className="bg-white/[0.04] border border-white/[0.06] text-slate-400 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                   {manga.status === 'ongoing' ? 'Đang phát hành' : 'Hoàn thành'}
                 </span>
               </div>
-              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none text-glow-purple">
+              <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-none text-glow-gold drop-shadow-sm">
                 {manga.title}
               </h1>
             </div>
 
             {/* Grid properties */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/5 border border-white/5 rounded-2xl p-4 text-xs font-semibold">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 bg-white/[0.02] border border-white/[0.04] rounded-2xl p-4 text-xs font-semibold">
               <div className="flex flex-col gap-1">
-                <span className="text-gray-400 flex items-center gap-1.5"><User className="h-3.5 w-3.5 text-purple-400" /> Tác Giả</span>
+                <span className="text-slate-400 flex items-center gap-1.5"><User className="h-3.5 w-3.5 text-[#c5a880]" /> Tác Giả</span>
                 <span className="text-white font-extrabold truncate">{manga.author}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-gray-400 flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-purple-400" /> Họa Sĩ</span>
+                <span className="text-slate-400 flex items-center gap-1.5"><Sparkles className="h-3.5 w-3.5 text-[#c5a880]" /> Họa Sĩ</span>
                 <span className="text-white font-extrabold truncate">{manga.artist}</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-gray-400 flex items-center gap-1.5"><Hash className="h-3.5 w-3.5 text-purple-400" /> Số Chương</span>
+                <span className="text-slate-400 flex items-center gap-1.5"><Hash className="h-3.5 w-3.5 text-[#c5a880]" /> Số Chương</span>
                 <span className="text-white font-black text-sm">{chapters.length} Chap</span>
               </div>
               <div className="flex flex-col gap-1">
-                <span className="text-gray-400 flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-purple-400" /> Phát Hành</span>
+                <span className="text-slate-400 flex items-center gap-1.5"><Calendar className="h-3.5 w-3.5 text-[#c5a880]" /> Phát Hành</span>
                 <span className="text-white font-extrabold">{manga.year || 'N/A'}</span>
               </div>
             </div>
 
             {/* Description Collapse */}
             <div className="flex flex-col gap-2">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Nội Dung Tóm Tắt</span>
-              <p className={`text-xs md:text-sm text-gray-300 leading-relaxed font-medium transition-all ${descCollapsed ? 'line-clamp-3 md:line-clamp-4' : ''}`}>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Nội Dung Tóm Tắt</span>
+              <p className={`text-xs md:text-sm text-slate-300 leading-relaxed font-medium transition-all ${descCollapsed ? 'line-clamp-3 md:line-clamp-4' : ''}`}>
                 {manga.description || 'Chưa có tóm tắt cốt truyện tiếng Việt cho tác phẩm này. Mời bạn đón đọc chương đầu tiên để khám phá hành trình huyền thoại!'}
               </p>
               {manga.description && manga.description.length > 250 && (
                 <button 
                   onClick={() => setDescCollapsed(!descCollapsed)}
-                  className="text-xs text-purple-400 hover:text-white font-bold flex items-center gap-1 mt-1 focus:outline-none w-fit text-left"
+                  className="text-xs text-[#c5a880] hover:text-white font-bold flex items-center gap-1 mt-1 focus:outline-none w-fit text-left cursor-pointer"
                 >
                   {descCollapsed ? (
                     <>Xem thêm <ChevronDown className="h-3.5 w-3.5" /></>
@@ -377,10 +377,10 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
 
             {/* Tags Badges */}
             <div className="flex flex-col gap-2.5">
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">Thể Loại Tags</span>
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Thể Loại Tags</span>
               <div className="flex flex-wrap gap-1.5">
                 {(manga.genres || []).map((genre, idx) => (
-                  <span key={idx} className="bg-purple-950/20 hover:bg-purple-900/30 text-purple-300 border border-purple-500/20 px-3 py-1 rounded-md text-[11px] font-extrabold tracking-wide transition cursor-pointer">
+                  <span key={idx} className="bg-white/[0.02] hover:bg-white/[0.06] text-slate-300 hover:text-[#c5a880] border border-white/[0.05] hover:border-[#c5a880]/30 px-3 py-1 rounded-md text-[11px] font-bold tracking-wide transition cursor-pointer">
                     {genre}
                   </span>
                 ))}
@@ -398,14 +398,14 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-5 border-b border-white/10 mb-6 text-left">
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-black text-white flex items-center gap-2">
-                <BookOpen className="h-5 w-5 text-[#39C5BB]" /> DANH SÁCH CHƯƠNG TRUYỆN
+                <BookOpen className="h-5 w-5 text-[#c5a880]" /> DANH SÁCH CHƯƠNG TRUYỆN
               </h2>
               
               {/* Force Sync button */}
               <button
                 onClick={handleForceSync}
                 disabled={syncing}
-                className={`p-1.5 rounded-lg border border-[#39C5BB]/20 hover:border-[#39C5BB]/50 bg-[#39C5BB]/5 hover:bg-[#39C5BB]/10 text-[#39C5BB] flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm group active:scale-95 ${
+                className={`p-1.5 rounded-lg border border-[#c5a880]/25 hover:border-[#c5a880]/50 bg-[#c5a880]/5 hover:bg-[#c5a880]/10 text-[#c5a880] flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm group active:scale-95 ${
                   syncing ? 'opacity-70 cursor-not-allowed' : ''
                 }`}
                 title="Đồng bộ nóng với máy chủ gốc (Lấy mới ngay lập tức)"
@@ -422,12 +422,12 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
                 <select
                   value={selectedLang}
                   onChange={(e) => setSelectedLang(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs text-white font-bold cursor-pointer focus:outline-none focus:border-purple-500 hover:bg-white/10 transition"
+                  className="px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs text-white font-bold cursor-pointer focus:outline-none focus:border-[#c5a880]/50 hover:bg-white/10 transition"
                   title="Chọn ngôn ngữ"
                 >
-                  <option value="" className="bg-gray-900 text-white">Tất cả ngôn ngữ</option>
+                  <option value="" className="bg-slate-900 text-white">Tất cả ngôn ngữ</option>
                   {availableLangs.map(l => (
-                    <option key={l} value={l} className="bg-gray-900 text-white">
+                    <option key={l} value={l} className="bg-slate-900 text-white">
                       {l === 'vi' ? 'Vietnamese' : l === 'en' ? 'English' : l === 'es' ? 'Spanish' : l === 'pt-br' ? 'Portuguese' : l.toUpperCase()}
                     </option>
                   ))}
@@ -441,9 +441,9 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
                   value={chapterQuery}
                   onChange={(e) => setChapterQuery(e.target.value)}
                   placeholder="Lọc số chương, tên chương..."
-                  className="w-full px-3 py-1.5 pl-8 rounded-lg bg-white/5 border border-white/5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition"
+                  className="w-full px-3 py-1.5 pl-8 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#c5a880]/50 focus:bg-white/[0.06] transition"
                 />
-                <Search className="absolute left-2.5 top-2 h-3.5 w-3.5 text-gray-500" />
+                <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-500" />
               </div>
 
               {/* Sort button */}
@@ -459,11 +459,11 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
 
           {/* List display */}
           {loadingChapters ? (
-            <div className="py-20 text-center text-purple-400 font-bold animate-pulse text-xs">
+            <div className="py-20 text-center text-[#c5a880] font-bold animate-pulse text-xs">
               Đang tải danh sách chương từ CDN...
             </div>
           ) : filteredChapters.length === 0 ? (
-            <div className="py-12 text-center text-gray-500 text-xs font-bold">
+            <div className="py-12 text-center text-slate-500 text-xs font-bold">
               Không tìm thấy chương truyện nào khớp với bộ lọc!
             </div>
           ) : (
@@ -478,20 +478,20 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
                     href={`/read/${source}/${id}/${encodeURIComponent(cleanId)}?chapNum=${ch.chapter}`}
                     className={`flex items-center justify-between p-3.5 rounded-xl border transition-all text-xs font-semibold group ${
                       isRead 
-                        ? 'bg-cyan-950/20 border-cyan-500/30 text-cyan-300 shadow-[inset_0_0_10px_rgba(6,182,212,0.05)]' 
-                        : 'bg-white/3 hover:bg-white/7 border-white/5 text-gray-300 hover:text-white hover:border-purple-500/40'
+                        ? 'bg-[#c5a880]/5 border-[#c5a880]/20 text-[#c5a880] shadow-[inset_0_0_10px_rgba(197,168,128,0.03)]' 
+                        : 'bg-white/[0.02] hover:bg-white/[0.06] border-white/[0.04] text-slate-300 hover:text-white hover:border-[#c5a880]/30'
                     }`}
                   >
                     <div className="flex flex-col gap-0.5 truncate max-w-[80%]">
-                      <span className="font-extrabold text-sm text-white group-hover:text-purple-400 transition flex items-center gap-1.5">
-                        Chương {ch.chapter} {isRead && <span className="bg-cyan-500/20 text-cyan-400 text-[9px] font-black uppercase px-1.5 py-0.2 rounded">Đã Đọc</span>}
+                      <span className="font-extrabold text-sm text-white group-hover:text-[#c5a880] transition flex items-center gap-1.5">
+                        Chương {ch.chapter} {isRead && <span className="bg-[#c5a880]/15 text-[#c5a880] text-[9px] font-black uppercase px-1.5 py-0.2 rounded border border-[#c5a880]/20">Đã Đọc</span>}
                       </span>
-                      <span className="text-[10px] text-gray-500 group-hover:text-gray-400 transition truncate mt-0.5">
+                      <span className="text-[10px] text-slate-500 group-hover:text-slate-400 transition truncate mt-0.5">
                         {ch.title || 'Không có tiêu đề'}
                       </span>
                     </div>
                     
-                    <span className="text-[10px] text-gray-500 group-hover:text-purple-400 transition font-mono whitespace-nowrap bg-black/20 px-2 py-1 rounded">
+                    <span className="text-[10px] text-slate-500 group-hover:text-[#c5a880] transition font-mono whitespace-nowrap bg-black/20 px-2 py-1 rounded">
                       {ch.group && !/otruyen|mangadex/i.test(ch.group) ? ch.group : 'Hệ Thống'}
                     </span>
                   </Link>

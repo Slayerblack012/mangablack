@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Clock, Trash2, BookOpen, ArrowRight, ShieldAlert } from 'lucide-react';
+import { X, Clock, Trash2, BookOpen, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { API_BASE } from '../config';
 
@@ -50,7 +50,6 @@ export default function HistoryDrawer() {
     const updated = history.filter(item => !(item.mangaId === mangaId && item.source === source));
     localStorage.setItem('manga_history', JSON.stringify(updated));
     setHistory(updated);
-    // Dispatch events to notify other components (e.g. details page)
     window.dispatchEvent(new Event('manga-history-updated'));
   };
 
@@ -81,49 +80,45 @@ export default function HistoryDrawer() {
       {/* Backdrop overlay with transition */}
       <div
         onClick={() => setIsOpen(false)}
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[99998] transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-black/70 backdrop-blur-sm z-[99998] transition-opacity duration-300 ${
           isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       ></div>
 
       {/* Main Drawer Panel */}
       <div
-        className={`fixed top-0 right-0 h-screen w-full sm:max-w-md bg-[#040815]/95 border-l border-cyan-500/30 z-[99999] shadow-[0_0_35px_rgba(6,182,212,0.2)] flex flex-col transition-transform duration-300 ease-out select-none ${
+        className={`fixed top-0 right-0 h-screen w-full sm:max-w-md bg-[#07090e] border-l border-white/[0.05] z-[99999] shadow-[-10px_0_40px_rgba(0,0,0,0.6)] flex flex-col transition-transform duration-300 ease-out select-none ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/* Holographic Scanline Overlay */}
-        <div className="absolute inset-0 pointer-events-none bg-hud-scanlines opacity-[0.03] z-20"></div>
-
         {/* Drawer Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-cyan-500/20 bg-cyan-950/20 relative">
-          <div className="flex items-center gap-2">
-            <div className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]"></div>
-            <h2 className="text-xs font-black text-cyan-400 tracking-widest uppercase font-mono flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5" /> Nhật Ký Hành Trình
+        <div className="flex items-center justify-between px-5 py-5 border-b border-white/[0.05] bg-white/[0.01]">
+          <div className="flex items-center gap-2.5">
+            <Clock className="h-4 w-4 text-[#c5a880]" />
+            <h2 className="text-sm font-bold text-white tracking-wider uppercase">
+              Lịch Sử Đọc Truyện
             </h2>
           </div>
           <button
             onClick={() => setIsOpen(false)}
-            className="p-1 hover:bg-white/10 rounded-md text-gray-400 hover:text-white transition flex items-center justify-center border border-white/5 cursor-pointer"
+            className="p-1.5 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white transition flex items-center justify-center border border-transparent hover:border-white/5 cursor-pointer"
             title="Đóng bảng lịch sử"
           >
-            <X className="h-4.5 w-4.5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Drawer Body - Scrollable */}
-        <div className="flex-grow overflow-y-auto px-5 py-6 flex flex-col gap-4 custom-scrollbar bg-black/10 z-10">
+        <div className="flex-grow overflow-y-auto px-5 py-6 flex flex-col gap-4 custom-scrollbar bg-black/[0.02]">
           {history.length === 0 ? (
             <div className="flex-grow flex flex-col items-center justify-center text-center gap-4 px-4 py-20">
-              <div className="h-16 w-16 rounded-full bg-white/5 border border-white/5 flex items-center justify-center shadow-inner relative group overflow-hidden">
-                <Clock className="h-7 w-7 text-cyan-500/50 group-hover:scale-110 transition duration-300" />
-                <div className="absolute inset-0 bg-[#39C5BB]/5 animate-ping rounded-full"></div>
+              <div className="h-14 w-14 rounded-full bg-white/[0.02] border border-white/[0.05] flex items-center justify-center shadow-inner">
+                <Clock className="h-6 w-6 text-slate-500/50" />
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-gray-300 mb-1 font-mono uppercase tracking-wider">CỔNG TRUYỆN CHƯA MỞ</h3>
-                <p className="text-xs text-gray-500 leading-relaxed font-semibold">
-                  Hệ thống chưa tìm thấy dữ liệu vết chân linh hồn của bạn. Hãy bước chân vào các cổng truyện để lưu lại tiến trình!
+              <div className="max-w-xs">
+                <h3 className="text-xs font-bold text-slate-300 mb-1 tracking-wider uppercase">LỊCH SỬ TRỐNG</h3>
+                <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                  Bạn chưa đọc tác phẩm nào gần đây. Hãy bắt đầu chọn một tác phẩm để theo dõi tiến độ đọc của mình!
                 </p>
               </div>
             </div>
@@ -135,18 +130,18 @@ export default function HistoryDrawer() {
               return (
                 <div
                   key={`${item.source}-${item.mangaId}`}
-                  className="bg-white/3 border border-white/5 rounded-xl p-3 flex gap-3.5 relative group hover:border-cyan-500/30 transition-all duration-300 hover:shadow-[0_0_15px_rgba(6,182,212,0.06)]"
+                  className="bg-white/[0.02] border border-white/[0.04] rounded-xl p-3 flex gap-3.5 relative group hover:border-[#c5a880]/30 transition-all duration-300 hover:shadow-[0_4px_20px_rgba(0,0,0,0.15)]"
                 >
                   {/* Poster Image */}
                   <Link
                     href={`/manga/${item.source}/${item.mangaId}`}
                     onClick={() => setIsOpen(false)}
-                    className="h-20 w-15 rounded-lg overflow-hidden border border-white/10 flex-shrink-0 bg-gray-950 relative group cursor-pointer"
+                    className="h-20 w-15 rounded-lg overflow-hidden border border-white/[0.08] flex-shrink-0 bg-slate-950 relative group cursor-pointer shadow-md"
                   >
                     <img
                       src={item.coverUrl ? `${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(item.coverUrl)}&source=${item.source}` : '/warning.svg'}
                       alt={item.mangaTitle}
-                      className="h-full w-full object-cover group-hover:scale-105 transition duration-300"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => { e.currentTarget.src = '/warning.svg'; }}
                     />
                   </Link>
@@ -154,15 +149,15 @@ export default function HistoryDrawer() {
                   {/* Item Metadata Details */}
                   <div className="flex-grow flex flex-col justify-between text-left min-w-0 pr-8">
                     <div>
-                      <div className="flex items-center gap-1.5 mb-1 flex-wrap">
-                        <span className={`px-2 py-0.2 rounded text-[8px] font-black uppercase tracking-wider border ${
+                      <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                        <span className={`px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-wider border ${
                           item.source === 'vn'
-                            ? 'bg-purple-950/20 text-purple-400 border-purple-500/20'
-                            : 'bg-cyan-950/20 text-cyan-400 border-cyan-500/20'
+                            ? 'bg-[#c5a880]/10 text-[#c5a880] border-[#c5a880]/20'
+                            : 'bg-indigo-500/10 text-indigo-300 border-indigo-500/20'
                         }`}>
                           {item.source === 'vn' ? 'VNmanga' : 'Global'}
                         </span>
-                        <span className="text-[9px] text-gray-500 font-mono font-bold">
+                        <span className="text-[9px] text-slate-500 font-semibold">
                           {getRelativeTime(item.timestamp)}
                         </span>
                       </div>
@@ -170,21 +165,21 @@ export default function HistoryDrawer() {
                       <Link
                         href={`/manga/${item.source}/${item.mangaId}`}
                         onClick={() => setIsOpen(false)}
-                        className="text-xs font-black text-white hover:text-cyan-400 transition-colors block truncate pr-1"
+                        className="text-xs font-bold text-white hover:text-[#c5a880] transition-colors block truncate pr-1"
                         title={item.mangaTitle}
                       >
                         {item.mangaTitle}
                       </Link>
 
-                      <span className="text-[10px] text-cyan-400 font-extrabold block mt-0.5 font-mono">
-                        Đang đọc: Chương {item.chapterNum}
+                      <span className="text-[10px] text-slate-400 font-semibold block mt-1">
+                        Đang đọc: <span className="text-[#c5a880] font-bold">Chương {item.chapterNum}</span>
                       </span>
                     </div>
 
                     <Link
                       href={continueUrl}
                       onClick={() => setIsOpen(false)}
-                      className="mt-2.5 px-3 py-1.5 rounded-lg bg-cyan-600/90 hover:bg-cyan-700 text-white font-black text-[9px] uppercase tracking-widest flex items-center justify-center gap-1 w-fit transition shadow-sm"
+                      className="mt-2.5 px-3 py-1.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.06] border border-white/[0.05] hover:border-[#c5a880]/40 text-slate-200 hover:text-white font-bold text-[9px] uppercase tracking-wider flex items-center justify-center gap-1 w-fit transition-all shadow-sm"
                     >
                       <BookOpen className="h-3 w-3" /> Đọc tiếp <ArrowRight className="h-2.5 w-2.5 group-hover:translate-x-0.5 transition-transform" />
                     </Link>
@@ -193,7 +188,7 @@ export default function HistoryDrawer() {
                   {/* Single Delete Button */}
                   <button
                     onClick={() => deleteItem(item.mangaId, item.source)}
-                    className="absolute top-3 right-3 p-1.5 text-gray-500 hover:text-red-400 hover:bg-red-950/20 rounded-md border border-transparent hover:border-red-900/30 transition cursor-pointer"
+                    className="absolute top-3 right-3 p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-950/10 rounded-lg border border-transparent hover:border-red-900/20 transition cursor-pointer"
                     title="Xoá khỏi lịch sử"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
@@ -206,31 +201,16 @@ export default function HistoryDrawer() {
 
         {/* Drawer Footer Actions */}
         {history.length > 0 && (
-          <div className="p-4 border-t border-cyan-500/20 bg-cyan-950/10 z-10 flex gap-2">
+          <div className="p-4 border-t border-white/[0.05] bg-white/[0.01] flex gap-2">
             <button
               onClick={clearAllHistory}
-              className="w-full py-2.5 rounded-xl border border-red-500/30 hover:border-red-500/50 bg-red-950/10 hover:bg-red-950/20 text-red-400 hover:text-red-300 font-extrabold text-[10px] uppercase tracking-widest flex items-center justify-center gap-1.5 transition cursor-pointer"
+              className="w-full py-2.5 rounded-xl border border-red-500/20 hover:border-red-500/40 bg-red-950/5 hover:bg-red-950/15 text-red-400 hover:text-red-300 font-bold text-[10px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition cursor-pointer"
             >
-              <Trash2 className="h-3.5 w-3.5" /> Xoá Sạch Nhật Ký
+              <Trash2 className="h-3.5 w-3.5" /> Xoá Sạch Lịch Sử
             </button>
           </div>
         )}
       </div>
-
-      <style jsx global>{`
-        .bg-hud-scanlines {
-          background: linear-gradient(
-            rgba(18, 16, 16, 0) 50%, 
-            rgba(0, 0, 0, 0.25) 50%
-          ), linear-gradient(
-            90deg, 
-            rgba(255, 0, 0, 0.06), 
-            rgba(0, 255, 0, 0.02), 
-            rgba(0, 0, 255, 0.06)
-          );
-          background-size: 100% 4px, 6px 100%;
-        }
-      `}</style>
     </>
   );
 }

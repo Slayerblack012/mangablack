@@ -12,11 +12,9 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
-    // Doc nguon mac dinh tu localStorage
     let savedSource = localStorage.getItem('manga_source') || 'global';
     setSource(savedSource);
 
-    // Bat su kien dong bo neu nguon thay doi tu trang khac
     const handleSourceSync = () => {
       let activeSource = localStorage.getItem('manga_source') || 'global';
       setSource(activeSource);
@@ -31,10 +29,8 @@ export default function Header() {
   const handleSourceChange = (newSource: string) => {
     localStorage.setItem('manga_source', newSource);
     setSource(newSource);
-    // Ban event toan cuc bao hieu nguon thay doi de danh sach truyen tu dong tai lai
     window.dispatchEvent(new Event('manga-source-changed'));
     
-    // Neu dang khong o trang chu, lap tuc quay ve trang chu de kham pha nguon moi
     if (window.location.pathname !== '/') {
       router.push('/');
     }
@@ -54,8 +50,8 @@ export default function Header() {
           {/* Brand Logo */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center gap-2">
-              <span className="text-2xl font-black tracking-tighter text-[#39C5BB] drop-shadow-[0_0_12px_#39C5BB]">
-                MANGA<span className="text-white font-light">-BLACK</span>
+              <span className="text-xl font-bold tracking-wider text-white font-display">
+                MANGA<span className="text-[#c5a880] font-light">-BLACK</span>
               </span>
             </Link>
           </div>
@@ -68,9 +64,9 @@ export default function Header() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={source === 'vn' ? 'Tìm kiếm truyện Việt hóa...' : 'Search global manga...'}
-                className="w-full px-4 py-2 pl-10 rounded-full bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:border-purple-500 focus:bg-white/10 transition-all text-sm"
+                className="w-full px-4 py-2 pl-10 rounded-full bg-white/[0.03] border border-white/[0.06] text-white placeholder-slate-400 focus:outline-none focus:border-[#c5a880]/50 focus:bg-white/[0.05] transition-all text-xs"
               />
-              <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-slate-400" />
             </div>
             <button type="submit" className="hidden">Tìm</button>
           </form>
@@ -79,29 +75,29 @@ export default function Header() {
           <div className="flex items-center gap-4">
             
             {/* Nav links */}
-            <nav className="flex items-center gap-1 text-sm font-semibold">
-              <Link href="/" className="hidden lg:flex px-3 py-1.5 rounded-md hover:bg-white/5 text-gray-300 hover:text-white transition items-center gap-1.5">
-                <Compass className="h-4 w-4" /> Khám Phá
+            <nav className="flex items-center gap-1.5 text-xs font-bold">
+              <Link href="/" className="hidden lg:flex px-3 py-1.5 rounded-lg hover:bg-white/5 text-slate-300 hover:text-white transition items-center gap-1.5">
+                <Compass className="h-4 w-4 text-slate-400" /> Khám Phá
               </Link>
               <button 
                 onClick={() => window.dispatchEvent(new Event('manga-open-history'))}
-                className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/5 hover:border-cyan-500/30 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+                className="px-3 py-1.5 rounded-lg bg-white/[0.02] hover:bg-white/[0.06] text-slate-300 hover:text-white border border-white/[0.05] hover:border-[#c5a880]/30 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
                 title="Lịch sử đọc truyện"
               >
-                <Clock className="h-4 w-4 text-cyan-400" /> <span>Lịch Sử</span>
+                <Clock className="h-4 w-4 text-[#c5a880]" /> <span>Lịch Sử</span>
               </button>
             </nav>
 
             {/* Source Switcher */}
-            <div className="flex items-center bg-black/30 border border-white/5 rounded-full p-0.5">
+            <div className="flex items-center bg-slate-950/40 border border-white/[0.05] rounded-full p-0.5">
               {MANGA_SOURCES.map((src) => (
                 <button
                   key={src.id}
                   onClick={() => handleSourceChange(src.id)}
-                  className={`px-3 py-1 rounded-full text-xs font-bold transition-all flex items-center gap-1 ${
+                  className={`px-3 py-1 rounded-full text-[10px] font-extrabold transition-all flex items-center gap-1 ${
                     source === src.id
-                      ? 'bg-purple-600/80 text-white shadow-lg border border-white/10'
-                      : 'text-gray-400 hover:text-white hover:bg-white/5'
+                      ? 'bg-[#c5a880] text-[#07090e] shadow-md'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
                   }`}
                 >
                   <span>{src.flag}</span>

@@ -1,59 +1,51 @@
 'use client';
 
-import { Activity, ShieldAlert, Cpu, HardDrive } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function Footer() {
-  const [ping, setPing] = useState<number>(12);
-
-  useEffect(() => {
-    // Gia lap dao dong nhe do tre mang de tang cam giac thoi gian thuc
-    const interval = setInterval(() => {
-      setPing(Math.floor(Math.random() * 8) + 8);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <footer className="mt-20 border-t border-white/5 bg-black/40 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <footer className="mt-20 border-t border-white/[0.04] bg-[#07090e]/80 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
         
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pb-8 border-b border-white/5">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pb-8 border-b border-white/[0.04]">
           
           {/* Col 1: Brand Info */}
-          <div className="text-center md:text-left">
-            <span className="text-lg font-black tracking-tighter text-gradient-neon text-glow-purple">
-              MANGA<span className="text-white font-light">-BLACK</span>
+          <div className="text-center md:text-left flex flex-col gap-2">
+            <span className="text-lg font-bold tracking-wider text-white font-display">
+              MANGA<span className="text-[#c5a880] font-light">-BLACK</span>
             </span>
-            <p className="text-xs text-gray-500 mt-2">
-              Goku black Super saiyan rose
+            <p className="text-xs text-slate-400 max-w-sm leading-relaxed mx-auto md:mx-0">
+              Nền tảng đọc truyện trực tuyến cao cấp, mang lại trải nghiệm đọc truyện tuyệt đỉnh với công nghệ tối ưu WebP thời gian thực và đồng bộ đa nguồn hoàn toàn không chứa quảng cáo.
             </p>
           </div>
 
-          {/* Col 2: Miku Mascot */}
-          <div className="text-center md:text-right flex flex-col md:items-end justify-center">
-            <div className="relative group flex justify-center md:justify-end w-full">
-              <div className="absolute inset-0 bg-cyan-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <img 
-                src="/miku.png" 
-                alt="Hatsune Miku Mascot" 
-                className="h-16 w-16 object-cover rounded-full border border-cyan-500/30 relative z-10 drop-shadow-[0_0_10px_rgba(6,182,212,0.3)] hover:scale-110 transition-transform duration-300 cursor-pointer"
-              />
-            </div>
+          {/* Col 2: Luxury Links */}
+          <div className="flex justify-center md:justify-end gap-6 text-xs text-slate-400 font-bold flex-wrap">
+            <Link href="/" className="hover:text-[#c5a880] transition-colors">Khám Phá</Link>
+            <button 
+              onClick={() => window.dispatchEvent(new Event('manga-open-history'))}
+              className="hover:text-[#c5a880] transition-colors cursor-pointer"
+            >
+              Lịch Sử
+            </button>
+            <a href="#" className="hover:text-[#c5a880] transition-colors">Điều Khoản</a>
+            <a href="#" className="hover:text-[#c5a880] transition-colors">Bảo Mật</a>
           </div>
 
         </div>
 
         {/* Copyright */}
-        <div className="flex flex-col sm:flex-row justify-between items-center pt-6 text-[10px] text-gray-500 gap-4">
+        <div className="flex flex-col sm:flex-row justify-between items-center pt-6 text-[10px] text-slate-500 gap-4">
           <p>
-            MANGA-BLACK &copy; {new Date().getFullYear()} - Nền tảng Độc quyền Tối thượng của Bạn.
+            MANGA-BLACK &copy; {new Date().getFullYear()} - Trải nghiệm độc giả cao cấp nhất.
           </p>
-          <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-end">
-            <span className="hover:text-[#39C5BB] cursor-pointer transition" title="Điều khoản sử dụng">Trỗi dậy</span>
-            <span className="hover:text-cyan-400 cursor-pointer transition" title="Chính sách bảo mật">Bóng tối sẽ tuân lệnh ta</span>
-            <span className="hover:text-red-400 cursor-pointer transition" title="Liên hệ báo cáo">Ngươi đã được Hệ Thống lựa chọn</span>
+          <div className="flex items-center gap-4 flex-wrap justify-center sm:justify-end font-semibold">
+            <span>Tối ưu hình ảnh WebP/AVIF</span>
+            <span>•</span>
+            <span>Dữ liệu cục bộ mã hóa</span>
+            <span>•</span>
+            <span>Đường truyền CDN băng thông rộng</span>
           </div>
         </div>
 
