@@ -16,7 +16,7 @@ export default function Footer() {
               MANGA<span className="text-[#c5a880] font-light">-BLACK</span>
             </span>
             <p className="text-[11px] text-slate-400 leading-relaxed font-semibold pr-4">
-              Wibu Never Die — Nơi hội tụ các chiến thần cuồng thế giới 2D, đọc truyện xuyên màn đêm hoàn toàn không quảng cáo rác!
+              Wibu Never Die — Nơi hội tụ các chiến thần cuồng thế giới 2D, đọc truyện xuyên màn đêm hoàn toàn không quảng cáo!
             </p>
           </div>
 
