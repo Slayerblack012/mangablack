@@ -1,84 +1,59 @@
-# MANGA-BLACK - Thiên Đường Truyện Tranh Cho Wibu & Otaku
+# MANGA-BLACK - Thien Duong Truyen Tranh Cho Wibu va Otaku
 
-Chào mừng các Wibu và Otaku chân chính đến với **MANGA-BLACK** — Thế giới đọc truyện tranh trực tuyến tối thượng, mang lại trải nghiệm đọc truyện tuyệt đỉnh, hoàn toàn mượt mà và sắc nét. 
+Chao mung cac Wibu va Otaku den voi MANGA-BLACK. Day la the gioi doc truyen tranh truc tuyen cao cap, mang lai trai nghiem doc truyen dinh cao, muot ma va hoan toan khong co su lam phien.
 
-Đặc biệt, giao diện nền tảng được lấy cảm hứng sâu sắc từ **Hệ Thống Solo Leveling / Hoàng Đế Bóng Tối**, mang lại cảm giác thức tỉnh sức mạnh nhập vai có một không hai!
-
----
-
-## 🔮 Những Tính Năng Vượt Trội
-
-1. **Hình Ảnh Siêu Sắc Nét & Mượt Mà**:
-   * Tích hợp cơ chế xử lý hình ảnh độc quyền, tự động làm nét và tối ưu dung lượng hình ảnh trực tiếp khi đọc, đảm bảo trải nghiệm sướng mắt nhất cho người xem.
-   * Tự động lưu trữ hình ảnh thông minh giúp giảm thiểu tối đa thời gian chờ đợi hình ảnh, tốc độ tải chương cực nhanh.
-
-2. **Hạ Tầng Tải Trang Siêu Tốc Cho Wibu**:
-   * Toàn bộ các đường truyền kết nối đến các kho tàng truyện lớn trong nước và quốc tế đều được xử lý khép kín và an toàn tuyệt đối.
-   * Trải nghiệm mượt mà siêu tốc, bảo vệ tuyệt đối thiết bị của bạn.
-
-3. **Giao Diện Hệ Thống Độc Quyền (Solo Leveling Cyber HUD)**:
-   * **Hào quang Bóng Tối (Solo Leveling Aura)**: Lớp phủ sương mù năng lượng bóng tối chuyển động huyền ảo ở các viền màn hình, tạo chiều sâu nghệ thuật.
-   * **Cảnh báo Hệ thống Solo Leveling**: Các hộp thoại thông báo, cảnh báo xóa lịch sử được thiết kế 100% dựa trên giao diện Quest Prompt huyền thoại của Thợ Săn Sung Jin-Woo, mang lại cảm giác nhập vai chân thực.
-   * **Phong cách Minimalist Luxury**: Sự kết hợp hoàn mỹ giữa tông nền tối dịu mắt (`#07090e`), các điểm nhấn vàng Champagne (`#c5a880`) và hiệu ứng kính mờ (Glassmorphism) siêu sang trọng.
+Giao dien nen tang duoc thiet ke tu kien truc bong toi sang trong, mang lai cam giac nhap vai doc dao cho doc gia khi kham pha cac kho tang truyen tranh khong lo.
 
 ---
 
-## 📂 Các Phân Khu Của Hệ Thống
+## Cac Tinh Nang Noi Bat
 
-```text
-MangaImperial/
-├── public/                 # Tài nguyên hình ảnh, biểu tượng Goku Black huyền thoại
-├── src/
-├── src/services/           # Phân khu dịch vụ kết nối dữ liệu siêu tốc
-│   ├── types.ts            # Kiểu dữ liệu chuẩn hóa của hệ thống
-│   ├── otruyen.service.ts  # Cổng kết nối truyện quốc tế và Việt Nam
-│   └── mangadex.service.ts # Cổng kết nối truyện quốc tế cao cấp
-├── src/app/
-│   ├── api/                # Cổng trung chuyển hình ảnh sắc nét
-│   ├── components/         # Thành phần giao diện (Header, Aura, Lịch sử đọc, Goku Black tab)
-│   ├── latest/             # Phân khu truyện mới thức tỉnh
-│   ├── manga/              # Thông tin chi tiết các bộ truyện
-│   ├── read/               # Trình đọc truyện dịu mắt ban đêm
-│   ├── globals.css         # Thiết kế CSS Cyber HUD đỉnh cao
-│   ├── layout.tsx          # Lớp nền và favicon Goku Black
-│   └── page.tsx            # Sảnh chính khám phá truyện
-```
+### 1. Trai Nghiem Sieu Muot Ma va Sac Net
+* Toan bo hinh anh cua cac chuong truyen deu duoc he thong toi uu hoa tu dong de dat do sac net cao va toc do tai sieu toc.
+* Bo nho tam thoi giup giam thieu thoi gian cho doi khi tai cac trang truyen lien tuc, mang lai trai nghiem doc cuon doc muot ma nhat.
+
+### 2. Giao Dien HUD Sang Trong va Doc Dao
+* Hieu ung hao quang bong toi chuyen dong o cac vien man hinh mang den chieu sau nghe thuat va tang cuong do tap trung khi doc truyen ban dem.
+* Cac thong bao duoc lay cam hung tu he thong Solo Leveling giup trai nghiem tro nen thu vi va mang dam sac mau nhap vai.
+* Tong mau toi chu dao ket hop vang Champagne thoi thuong giup bao ve mat va mang lai cam giac cao cap.
+
+### 3. Tinh Nang Ca Nhan Hoa Tinh Te
+* Muc lich su doc truyen truc quan giup doc gia de dang quan ly hanh trinh theo doi cac bo truyen yeu thich cua minh.
+* Danh muc phan loai phong phu phu hop voi moi so thich cua cac Otaku va Wibu thuc thu.
 
 ---
 
-## ⛩️ Nghi Thức Khởi Chạy Hệ Thống (Dành Cho Ký Chủ)
+## Huong Dan Su Dung Danh Cho Ky Chu
 
-### 1. Chuẩn Bị Trang Thiết Bị
-* Máy tính đã kích hoạt môi trường vận hành Node.js (phiên bản 18 trở lên).
+### 1. Chuan Bi Trang Thiet Bi
+* May tinh can duoc cai dat moi truong Node phien ban 18 tro len de van hanh khong gian doc truyen.
 
-### 2. Triệu Hồi Tài Nguyên
-Chạy lệnh sau tại thư mục gốc của dự án để tải toàn bộ tài nguyên:
-```bash
-npm install
-```
+### 2. Thiet Lap He Thong
+* Chuyen vao thu muc goc cua du an va chay lenh sau de nap toan bo tai nguyen:
+  ```bash
+  npm install
+  ```
 
-### 3. Khởi Động Không Gian Đọc Truyện (Development Mode)
-Kích hoạt máy chủ thử nghiệm cục bộ với tốc độ phản hồi siêu tốc:
-```bash
-npm run dev
-```
-Sau đó truy cập cổng kết nối [http://localhost:3000](http://localhost:3000) trên trình duyệt để lập tức thức tỉnh và trải nghiệm!
+### 3. Khoi Dong Khong Gian Doc Truyen
+* Chay lenh sau de khoi dong may chu thu nghiem cuc bo:
+  ```bash
+  npm run dev
+  ```
+* Sau khi may chu khoi dong, truy cap vao dia chi http://localhost:3000 tren trinh duyet cua ban de bat dau trai nghiem.
 
-### 4. Đóng Gói Và Triển Khai Thực Tế (Production Build)
-Để biên dịch toàn bộ hệ thống sang phiên bản tối ưu hóa hiệu năng cao nhất sẵn sàng chạy thực tế:
-```bash
-npm run build
-```
-Chạy thử nghiệm phiên bản đóng gói:
-```bash
-npm run start
-```
+### 4. Dong Goi Phien Ban Chinh Thuc
+* Chay lenh sau de dong goi he thong voi hieu nang cao nhat:
+  ```bash
+  npm run build
+  ```
+* Chay phien ban da dong goi:
+  ```bash
+  npm start
+  ```
 
 ---
 
-## 🛡️ Nguyên Tắc Bảo Mật Của Hệ Thống
+## Nguyen Tac Van Hanh Cua Nen Tang
 
-Hệ thống tuân thủ nghiêm ngặt chuẩn thiết kế bảo vệ ký chủ:
-1. **Lớp Phòng Vệ Khép Kín**: Ngăn chặn hoàn toàn việc gọi trực tiếp đến nguồn dữ liệu thô từ máy người dùng.
-2. **Bộ Lọc Miền Tin Cậy**: Chỉ cho phép tải hình ảnh thuộc danh sách an toàn được cấu hình sẵn trong máy chủ.
-3. **Mã Hóa Lịch Sử**: Mọi thông tin chương đã đọc và hành trình của bạn đều được lưu trữ và mã hóa an toàn trên thiết bị cá nhân.
+* **Bao mat doc gia**: Moi thong tin bookmarks va lich su duoc luu tru tuyet doi an toan ngay tren thiet bi ca nhan cua ban.
+* **Toi uu hoa he thong**: He thong luon dam bao su kin dao, khong lam ro thong tin nguon va giup doc gia van hanh tren mot duong truyen sach se, tron ven.
