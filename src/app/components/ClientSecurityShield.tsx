@@ -4,73 +4,49 @@ import { useEffect } from 'react';
 
 /**
  * ClientSecurityShield
- * Premium security safeguard component that blocks standard browser page source inspection,
- * prevents right-clicks, intercept developer shortcuts, and deploys active DevTools debugger traps.
+ * Premium security safeguard that allows F12 to open normally but hijacks console logs,
+ * silences warning information, and maintains data obfuscation integrity.
  */
 export default function ClientSecurityShield() {
   useEffect(() => {
-    // 1. Block right-click context menu entirely
-    const handleContextMenu = (e: MouseEvent) => {
-      e.preventDefault();
-      return false;
+    // Keep a reference to the real original console log to print our secure banner
+    const originalConsoleLog = window.console.log.bind(window.console);
+    const noop = () => {};
+
+    // Print the premium system security banner
+    const printSecurityBanner = () => {
+      try {
+        originalConsoleLog(
+          "%cMANGA-BLACK SYSTEM SECURITY STATUS: SECURE %c\n\n🛡️ Hệ thống bảo mật tối thượng bảo vệ thông tin. Mọi luồng API và tài nguyên đã được mã hóa bằng Base64 bảo vệ tuyệt đối.",
+          "color: #c5a880; font-family: sans-serif; font-size: 16px; font-weight: bold; background: #07090e; padding: 8px 12px; border-radius: 4px; border: 1px solid #c5a880;",
+          "color: #a0aec0; font-family: sans-serif; font-size: 12px;"
+        );
+      } catch (e) {}
     };
 
-    // 2. Block sensitive keyboard shortcuts (F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+S)
-    const handleKeyDown = (e: KeyboardEvent) => {
-      // Disable F12
-      if (e.key === 'F12') {
-        e.preventDefault();
-        return false;
-      }
-      
-      // Disable Ctrl+U (View Page Source)
-      if (e.ctrlKey && (e.key === 'u' || e.key === 'U')) {
-        e.preventDefault();
-        return false;
-      }
+    // Hijack and silence standard console methods to hide client-side logs
+    window.console.log = noop;
+    window.console.warn = noop;
+    window.console.error = noop;
+    window.console.info = noop;
+    window.console.debug = noop;
 
-      // Disable Ctrl+S (Save Webpage)
-      if (e.ctrlKey && (e.key === 's' || e.key === 'S')) {
-        e.preventDefault();
-        return false;
-      }
+    // Clear console immediately on mount and display banner
+    try {
+      window.console.clear();
+      printSecurityBanner();
+    } catch (e) {}
 
-      // Disable Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Inspect consoles)
-      if (
-        e.ctrlKey && 
-        e.shiftKey && 
-        (e.key === 'i' || e.key === 'I' || e.key === 'j' || e.key === 'J' || e.key === 'c' || e.key === 'C')
-      ) {
-        e.preventDefault();
-        return false;
-      }
-    };
-
-    // 3. DevTools Intruder Freeze Trap (Debugger loop)
-    // Automatically triggers debugger pause when Developer Tools panel is forced open, freezing browser inspector
-    const debuggerInterval = setInterval(() => {
-      (function() {
-        try {
-          (function a(i) {
-            if (("" + i / i).length !== 1 || i % 20 === 0) {
-              (function() {}).constructor("debugger")();
-            } else {
-              debugger;
-            }
-            a(++i);
-          })(0);
-        } catch (e) {}
-      })();
-    }, 1000);
-
-    // Apply active event listeners
-    document.addEventListener('contextmenu', handleContextMenu);
-    document.addEventListener('keydown', handleKeyDown);
+    // Continuous clear loop to keep DevTools console perfectly pristine and clean
+    const consoleClearInterval = setInterval(() => {
+      try {
+        window.console.clear();
+        printSecurityBanner();
+      } catch (e) {}
+    }, 2000);
 
     return () => {
-      document.removeEventListener('contextmenu', handleContextMenu);
-      document.removeEventListener('keydown', handleKeyDown);
-      clearInterval(debuggerInterval);
+      clearInterval(consoleClearInterval);
     };
   }, []);
 
