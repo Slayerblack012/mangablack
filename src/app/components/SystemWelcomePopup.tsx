@@ -57,7 +57,7 @@ export default function SystemWelcomePopup() {
           </div>
 
           <p className="text-xs text-slate-300 leading-relaxed max-w-sm">
-            Trải nghiệm thế giới truyện tranh đỉnh cao được thiết kế riêng cho các Wibu và Otaku chân chính, tự động ghi nhớ lịch sử đọc thông minh và giao diện tối giản sang trọng hoàn toàn không chứa quảng cáo.
+            Chào mừng chiến thần! Hãy thức tỉnh sức mạnh cùng Wibu Never Die — Đọc truyện là lẽ sống, lag giật là kẻ thù, hoàn toàn không quảng cáo, ghi nhớ lịch sử siêu thông minh!
           </p>
 
           <div className="w-full border-t border-white/[0.05] pt-4 flex flex-col gap-1.5 text-[10px] text-slate-400 font-medium">

@@ -14,7 +14,7 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 
 export const metadata: Metadata = {
   title: "MANGA-BLACK - Thiên Đường Truyện Tranh Cho Wibu & Otaku",
-  description: "Trải nghiệm đọc truyện tranh thế hệ mới đỉnh cao dành riêng cho cộng đồng Wibu và Otaku chân chính, tốc độ tải siêu nhanh và hoàn toàn không quảng cáo.",
+  description: "Wibu Never Die — Thiên đường đọc truyện tranh siêu tốc, không quảng cáo dành cho wibu chúa và otaku tối thượng.",
 };
 
 export default function RootLayout({
