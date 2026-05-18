@@ -1,92 +1,84 @@
-# MANGA-BLACK - Next-Gen Manga Platform
+# MANGA-BLACK - Thiên Đường Truyện Tranh Cho Wibu & Otaku
 
-Trải nghiệm đọc truyện tranh thế hệ mới được xây dựng trên kiến trúc nguyên khối hiệu năng cao, tối ưu hóa hiển thị thời gian thực và tích hợp luồng dữ liệu an toàn bảo mật tuyệt đối. Giao diện được thiết kế theo chủ đề **Hệ Thống Solo Leveling / Hoàng Đế Bóng Tối** mang lại trải nghiệm nhập vai độc nhất vô nhị.
+Chào mừng các Wibu và Otaku chân chính đến với **MANGA-BLACK** — Thế giới đọc truyện tranh trực tuyến tối thượng, mang lại trải nghiệm đọc truyện tuyệt đỉnh, hoàn toàn mượt mà và không chứa quảng cáo. 
 
----
-
-## Tính Năng Vượt Trội
-
-1. **Tối Ưu Hóa Ảnh WebP Thời Gian Thực (Dynamic Image Optimization)**:
-   * Tích hợp máy chủ trung gian (Proxy CDN) tự động thu nhỏ, giải nén và chuyển đổi định dạng hình ảnh sang WebP độ nén cao trực tiếp khi luồng dữ liệu được tải.
-   * Cơ chế Cache phân tầng giúp giảm thiểu băng thông máy chủ và tăng tốc độ phản hồi hình ảnh dưới 150ms.
-
-2. **Kiến Trúc Tích Hợp Luồng Dữ Liệu Bảo Mật (Zero-Leak Multi-Source CDN)**:
-   * Toàn bộ các cổng kết nối đến luồng dữ liệu nội địa và quốc tế được xử lý 100% tại máy chủ biên Next.js API Routes.
-   * Triệt tiêu hoàn toàn nguy cơ lộ địa chỉ máy chủ gốc hoặc luồng dữ liệu thứ ba khi người dùng thực hiện kiểm tra mã nguồn hệ thống (F12 Client Inspection Protection).
-
-3. **Bố Cục Giao Diện HUD Độc Quyền (Solo Leveling Cyber HUD)**:
-   * **Hiệu ứng Hào quang Hoàng Đế (Solo Leveling Aura)**: Lớp phủ sương mù năng lượng bóng tối chuyển động mượt mà ở biên màn hình bằng GPU Acceleration.
-   * **Cổng không gian (Dimension Quest Popup)**: Hộp hội thoại nhiệm vụ hằng ngày tự động xuất hiện bằng hiệu ứng dịch chuyển tọa độ (system-teleport keyframes), mang lại cảm giác mở ra không gian Ham Ngục chân thực.
-   * **Giao diện thẻ kính (Glassmorphic Cyber Grid)**: Phối hợp hoàn hảo giữa tông nền tối sâu thẳm, đường lưới scanline công nghệ và viền sáng neon Cyan.
+Đặc biệt, giao diện nền tảng được lấy cảm hứng sâu sắc từ **Hệ Thống Solo Leveling / Hoàng Đế Bóng Tối**, mang lại cảm giác thức tỉnh sức mạnh nhập vai có một không hai!
 
 ---
 
-## Kiến Trúc Công Nghệ (Tech Stack)
+## 🔮 Những Tính Năng Vượt Trội
 
-* **Khung công nghệ chính (Core Framework)**: Next.js (App Router) tối ưu hóa kết xuất hỗn hợp SSR/ISR/CSR.
-* **Ngôn ngữ phát triển (Language)**: TypeScript đảm bảo an toàn kiểu dữ liệu tuyệt đối từ máy chủ đến trình duyệt.
-* **Thư viện biểu tượng & kiểu dáng**: Tailwind CSS, Lucide React Icons.
-* **Quản lý trạng thái & Lưu trữ**: LocalStorage đồng bộ hóa thời gian thực các cài đặt nguồn truyện và trạng thái nhiệm vụ.
+1. **Hình Ảnh Siêu Sắc Nét & Mượt Mà**:
+   * Tích hợp cơ chế xử lý hình ảnh độc quyền, tự động làm nét và tối ưu dung lượng hình ảnh trực tiếp khi đọc, đảm bảo trải nghiệm sướng mắt nhất cho người xem.
+   * Tự động lưu trữ hình ảnh thông minh giúp giảm thiểu tối đa thời gian chờ đợi hình ảnh, tốc độ tải chương cực nhanh.
+
+2. **Hạ Tầng Tải Trang Siêu Tốc Cho Wibu**:
+   * Toàn bộ các đường truyền kết nối đến các kho tàng truyện lớn trong nước và quốc tế đều được xử lý khép kín và an toàn tuyệt đối.
+   * Trải nghiệm mượt mà không quảng cáo rác, không popup khó chịu, bảo vệ tuyệt đối thiết bị của bạn.
+
+3. **Giao Diện Hệ Thống Độc Quyền (Solo Leveling Cyber HUD)**:
+   * **Hào quang Bóng Tối (Solo Leveling Aura)**: Lớp phủ sương mù năng lượng bóng tối chuyển động huyền ảo ở các viền màn hình, tạo chiều sâu nghệ thuật.
+   * **Cảnh báo Hệ thống Solo Leveling**: Các hộp thoại thông báo, cảnh báo xóa lịch sử được thiết kế 100% dựa trên giao diện Quest Prompt huyền thoại của Thợ Săn Sung Jin-Woo, mang lại cảm giác nhập vai chân thực.
+   * **Phong cách Minimalist Luxury**: Sự kết hợp hoàn mỹ giữa tông nền tối dịu mắt (`#07090e`), các điểm nhấn vàng Champagne (`#c5a880`) và hiệu ứng kính mờ (Glassmorphism) siêu sang trọng.
 
 ---
 
-## Cấu Trúc Thư Mục Dự Án
+## 📂 Các Phân Khu Của Hệ Thống
 
 ```text
 MangaImperial/
-├── public/                 # Tài nguyên hình ảnh, biểu tượng hệ thống
+├── public/                 # Tài nguyên hình ảnh, biểu tượng Goku Black huyền thoại
 ├── src/
-│   ├── app/
-│   │   ├── api/            # API Route bảo mật trung chuyển luồng ảnh và dữ liệu
-│   │   ├── components/     # Các thành phần giao diện (Header, Aura, WelcomeQuest)
-│   │   ├── latest/         # Trang tổng hợp chương mới nhất
-│   │   ├── manga/          # Trang chi tiết thông tin bộ truyện
-│   │   ├── read/           # Bộ lọc và giao diện trình đọc truyện thông minh
-│   │   ├── globals.css     # Cấu hình thiết kế CSS Cyber HUD nâng cao
-│   │   ├── layout.tsx      # Quản lý lớp nền và thẻ toàn cục
-│   │   └── page.tsx        # Trang chủ khám phá danh sách truyện tập trung
-│   ├── services/           # Lớp kết nối dữ liệu an toàn phi tập trung (Server-side)
-│   └── config.ts           # Cấu hình cài đặt nguồn dữ liệu hệ thống
-├── package.json            # Quản lý gói phụ thuộc và câu lệnh vận hành
-└── tsconfig.json           # Cấu hình biên dịch TypeScript nghiêm ngặt
+├── src/services/           # Phân khu dịch vụ kết nối dữ liệu siêu tốc
+│   ├── types.ts            # Kiểu dữ liệu chuẩn hóa của hệ thống
+│   ├── otruyen.service.ts  # Cổng kết nối truyện quốc tế và Việt Nam
+│   └── mangadex.service.ts # Cổng kết nối truyện quốc tế cao cấp
+├── src/app/
+│   ├── api/                # Cổng trung chuyển hình ảnh sắc nét
+│   ├── components/         # Thành phần giao diện (Header, Aura, Lịch sử đọc, Goku Black tab)
+│   ├── latest/             # Phân khu truyện mới thức tỉnh
+│   ├── manga/              # Thông tin chi tiết các bộ truyện
+│   ├── read/               # Trình đọc truyện dịu mắt ban đêm
+│   ├── globals.css         # Thiết kế CSS Cyber HUD đỉnh cao
+│   ├── layout.tsx          # Lớp nền và favicon Goku Black
+│   └── page.tsx            # Sảnh chính khám phá truyện
 ```
 
 ---
 
-## Hướng Dẫn Vận Hành & Cài Đặt
+## ⛩️ Nghi Thức Khởi Chạy Hệ Thống (Dành Cho Ký Chủ)
 
-### 1. Yêu Cầu Hệ Thống
-* Node.js phiên bản 18.x trở lên.
-* Trình quản lý gói `npm` hoặc `yarn`.
+### 1. Chuẩn Bị Trang Thiết Bị
+* Máy tính đã kích hoạt môi trường vận hành Node.js (phiên bản 18 trở lên).
 
-### 2. Cài Đặt Các Gói Phụ Thuộc
-Chạy lệnh sau tại thư mục gốc của dự án để tự động tải các gói tài nguyên:
+### 2. Triệu Hồi Tài Nguyên
+Chạy lệnh sau tại thư mục gốc của dự án để tải toàn bộ tài nguyên:
 ```bash
 npm install
 ```
 
-### 3. Vận Hành Trong Môi Trường Phát Triển
-Khởi động máy chủ thử nghiệm cục bộ với khả năng tự động tải lại khi thay đổi mã nguồn (Hot Reloading):
+### 3. Khởi Động Không Gian Đọc Truyện (Development Mode)
+Kích hoạt máy chủ thử nghiệm cục bộ với tốc độ phản hồi siêu tốc:
 ```bash
 npm run dev
 ```
-Sau đó truy cập địa chỉ [http://localhost:3000](http://localhost:3000) trên trình duyệt để trải nghiệm.
+Sau đó truy cập cổng kết nối [http://localhost:3000](http://localhost:3000) trên trình duyệt để lập tức thức tỉnh và trải nghiệm!
 
-### 4. Đóng Gói Và Triển Khai Sản Phẩm (Production Build)
-Biên dịch dự án sang mã nguồn tối ưu hóa hiệu năng cao để sẵn sàng triển khai lên các dịch vụ đám mây (Render, Vercel, VPS...):
+### 4. Đóng Gói Và Triển Khai Thực Tế (Production Build)
+Để biên dịch toàn bộ hệ thống sang phiên bản tối ưu hóa hiệu năng cao nhất sẵn sàng chạy thực tế:
 ```bash
 npm run build
 ```
-Để chạy thử sản phẩm sau khi đóng gói cục bộ:
+Chạy thử nghiệm phiên bản đóng gói:
 ```bash
 npm run start
 ```
 
 ---
 
-## Nguyên Tắc Bảo Mật Luồng Dữ Liệu
+## 🛡️ Nguyên Tắc Bảo Mật Của Hệ Thống
 
-Dự án tuân thủ nghiêm ngặt chuẩn thiết kế bảo mật biên:
-1. **SSRF Guard**: Ngăn chặn hoàn toàn việc gọi trực tiếp đến nguồn dữ liệu thứ ba từ máy khách (Client-side fetches).
-2. **CDN Proxy Whitelisting**: Chỉ trung chuyển hình ảnh thuộc danh sách miền tin cậy đã được cấu hình sẵn trong máy chủ biên Next.js, triệt tiêu lỗ hổng khai thác SSRF chéo.
-3. **Anonymized Metadata**: Mọi đường dẫn và khóa định danh đều được mã hóa hoặc ẩn danh trước khi chuyển giao xuống trình duyệt người dùng.
+Hệ thống tuân thủ nghiêm ngặt chuẩn thiết kế bảo vệ ký chủ:
+1. **Lớp Phòng Vệ Khép Kín**: Ngăn chặn hoàn toàn việc gọi trực tiếp đến nguồn dữ liệu thô từ máy người dùng.
+2. **Bộ Lọc Miền Tin Cậy**: Chỉ cho phép tải hình ảnh thuộc danh sách an toàn được cấu hình sẵn trong máy chủ.
+3. **Mã Hóa Lịch Sử**: Mọi thông tin chương đã đọc và hành trình của bạn đều được lưu trữ và mã hóa an toàn trên thiết bị cá nhân.

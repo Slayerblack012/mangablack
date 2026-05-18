@@ -57,17 +57,17 @@ export default function SystemWelcomePopup() {
           </div>
 
           <p className="text-xs text-slate-300 leading-relaxed max-w-sm">
-            Trải nghiệm thế giới truyện tranh chất chất lượng cao với công nghệ tối ưu hóa hình ảnh thời gian thực, tự động ghi nhớ lịch sử đọc và giao diện tối giản sang trọng hoàn toàn không chứa quảng cáo.
+            Trải nghiệm thế giới truyện tranh đỉnh cao được thiết kế riêng cho các Wibu và Otaku chân chính, tự động ghi nhớ lịch sử đọc thông minh và giao diện tối giản sang trọng hoàn toàn không chứa quảng cáo.
           </p>
 
           <div className="w-full border-t border-white/[0.05] pt-4 flex flex-col gap-1.5 text-[10px] text-slate-400 font-medium">
             <div className="flex justify-between">
-              <span>● Chuẩn hình ảnh tối ưu:</span>
-              <span className="text-slate-200 font-semibold font-mono">WebP / AVIF Realtime</span>
+              <span>● Trải nghiệm hình ảnh:</span>
+              <span className="text-slate-200 font-semibold">Siêu Sắc Nét, Mượt Mà</span>
             </div>
             <div className="flex justify-between">
-              <span>● Độ trễ kết nối CDN:</span>
-              <span className="text-[#c5a880] font-semibold">Tốc độ tối đa</span>
+              <span>● Tốc độ tải truyện:</span>
+              <span className="text-[#c5a880] font-semibold">Siêu Tốc Không Giật Lag</span>
             </div>
           </div>
 

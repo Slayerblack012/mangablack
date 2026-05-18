@@ -216,15 +216,15 @@ export default function SystemAgentHUD() {
 
   // 4. Status Check Action (Kiểm tra hệ thống)
   const runStatusCheck = () => {
-    pushLog('=========== THONG SO HE THONG MA HOA ===========', 'system');
-    pushLog(`- DO TRE MANG (LATENCY): ${systemPing}ms (Sieu Nhanh)`, 'system');
-    pushLog('- AN TOAN PROXY: Kich Hoat (Strict Domain Whitelist)', 'system');
-    pushLog('- PHONG VE SSRF: Kich Hoat (Chan IP Localhost/Private)', 'system');
-    pushLog('- CHE DO HINH ANH: Auto-transcode WebP (Turbo Mode Active)', 'system');
-    pushLog('- TOC DO NEN: Effort level 2 | Chat luong 75%', 'system');
-    pushLog('- CACHE HIT RATE: 91.2% (Giam tai server toi da)', 'system');
+    pushLog('=========== TRANG THAI HE THONG ===========', 'system');
+    pushLog(`- TOC DO KET NOI: ${systemPing}ms (Sieu Nhanh)`, 'system');
+    pushLog('- AN TOAN HE THONG: Binh Thuong', 'system');
+    pushLog('- DU LIEU AN DANH: Kich Hoat', 'system');
+    pushLog('- CHE DO TRUYEN: Hinh Anh Sieu Net (Turbo Mode Active)', 'system');
+    pushLog('- TOC DO DOC: Sieu Fast | Muot Ma 100%', 'system');
+    pushLog('- BO NHO KHOE MANH: 91.2% (Toi uu hoa)', 'system');
     pushLog('-------------------------------------------------', 'system');
-    pushLog('[HET THONG]: Tat ca cac thong so deu an toan va dat hieu suat dinh cao.', 'success');
+    pushLog('[HE THONG]: Tat ca deu da san sang de phuc vu Wibu va Otaku.', 'success');
   };
 
   return (

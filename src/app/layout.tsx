@@ -13,8 +13,8 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "MANGA-BLACK - Next-Gen Manga Platform",
-  description: "Trải nghiệm đọc truyện thế hệ mới với công nghệ tối ưu hóa WebP thời gian thực và cào dữ liệu đa nguồn tốc độ cao.",
+  title: "MANGA-BLACK - Thiên Đường Truyện Tranh Cho Wibu & Otaku",
+  description: "Trải nghiệm đọc truyện tranh thế hệ mới đỉnh cao dành riêng cho cộng đồng Wibu và Otaku chân chính, tốc độ tải siêu nhanh và hoàn toàn không quảng cáo.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <head>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%2306060c%22/><text x=%2250%25%22 y=%2265%25%22 font-size=%2250%22 font-weight=%22bold%22 fill=%22%2339C5BB%22 font-family=%22sans-serif%22 text-anchor=%22middle%22>MB</text></svg>" />
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2230%22 fill=%22%2307090e%22/><path d=%22M50 15 C52 25, 45 35, 40 38 C35 40, 25 35, 20 45 C28 48, 38 48, 42 52 C35 55, 22 55, 15 65 C25 68, 38 65, 45 68 C40 75, 30 85, 35 90 C45 88, 52 82, 55 78 C60 85, 70 90, 75 88 C70 82, 68 75, 65 68 C72 65, 82 62, 85 58 C78 55, 68 56, 65 52 C72 48, 80 40, 78 35 C70 38, 62 42, 58 45 C60 35, 58 20, 50 15 Z%22 fill=%22%23ff76b8%22/><circle cx=%2236%22 cy=%2262%22 r=%223%22 fill=%22%23c5a880%22/><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22none%22 stroke=%22%23ff76b8%22 stroke-width=%222%22 stroke-dasharray=%226 4%22 opacity=%220.3%22/></svg>" />
       </head>
       <body className={`${plusJakartaSans.className} antialiased`}>
         <SoloLevelingAura />

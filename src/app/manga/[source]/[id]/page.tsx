@@ -460,7 +460,7 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
           {/* List display */}
           {loadingChapters ? (
             <div className="py-20 text-center text-[#c5a880] font-bold animate-pulse text-xs">
-              Đang tải danh sách chương từ CDN...
+              Đang chuẩn bị danh sách chương...
             </div>
           ) : filteredChapters.length === 0 ? (
             <div className="py-12 text-center text-slate-500 text-xs font-bold">

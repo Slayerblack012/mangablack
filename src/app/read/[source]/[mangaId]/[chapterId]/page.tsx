@@ -205,7 +205,7 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
           </div>
         ) : pages.length === 0 ? (
           <div className="py-32 text-center text-red-400 font-bold text-sm bg-white/[0.02] border border-white/[0.04] rounded-2xl mx-4">
-            Không tìm thấy trang truyện. Máy chủ CDN có thể bị lỗi, vui lòng quay lại sau!
+            Không tìm thấy trang truyện. Đường truyền tải đang gặp gián đoạn, vui lòng thử lại sau!
           </div>
         ) : (
           pages.map((imgUrl, index) => (
