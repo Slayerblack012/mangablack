@@ -6,7 +6,7 @@ import { BookOpen, Sparkles, Flame, Calendar, RefreshCw, Award, ArrowRight, User
 import Link from 'next/link';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import { API_BASE } from './config';
+import { API_BASE, getSecureProxyUrl } from './config';
 
 interface MangaItem {
   id: string;
@@ -196,7 +196,7 @@ function HomeContent() {
             {/* Backdrop Blur Background */}
             <div 
               className="absolute inset-0 bg-cover bg-center opacity-[0.15] scale-105"
-              style={{ backgroundImage: `url(${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(featuredManga.coverUrl)}&source=${source})` }}
+              style={{ backgroundImage: `url(${getSecureProxyUrl(featuredManga.coverUrl, source)})` }}
             ></div>
             
             {/* Dark & Gold Gradient Masks */}
@@ -210,7 +210,7 @@ function HomeContent() {
               <div className="hidden md:block col-span-1">
                 <div className="aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl border border-white/[0.06] relative group">
                   <img 
-                    src={featuredManga.coverUrl ? `${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(featuredManga.coverUrl)}&source=${source}` : '/warning.svg'}
+                    src={featuredManga.coverUrl ? getSecureProxyUrl(featuredManga.coverUrl, source) : '/warning.svg'}
                     alt={featuredManga.title}
                     className={`w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 ${!featuredManga.coverUrl ? 'object-contain p-8 opacity-50' : ''}`}
                     onError={(e) => { e.currentTarget.src = '/warning.svg'; e.currentTarget.className = 'w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500 object-contain p-8 opacity-50'; }}
@@ -444,7 +444,7 @@ function MangaCard({ manga, source }: { manga: MangaItem; source: string }) {
         {/* Poster container with system card */}
         <div className="aspect-[3/4] w-full bg-[#0b0e14] rounded-xl overflow-hidden relative system-card shadow-md">
           <img 
-            src={manga.coverUrl ? `${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(manga.coverUrl)}&source=${source}` : '/warning.svg'}
+            src={manga.coverUrl ? getSecureProxyUrl(manga.coverUrl, source) : '/warning.svg'}
             alt={manga.title}
             loading="lazy"
             className={`w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ${!manga.coverUrl ? 'object-contain p-4 opacity-50' : ''}`}

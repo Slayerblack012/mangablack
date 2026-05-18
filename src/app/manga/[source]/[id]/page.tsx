@@ -5,7 +5,7 @@ import { BookOpen, Star, Sparkles, User, RefreshCw, Hash, Calendar, Search, Arro
 import Link from 'next/link';
 import Header from '../../../components/Header';
 import Footer from '../../../components/Footer';
-import { API_BASE } from '../../../config';
+import { API_BASE, getSecureProxyUrl } from '../../../config';
 
 interface MangaDetail {
   id: string;
@@ -278,7 +278,7 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
           <div className="col-span-1 flex flex-col gap-4">
             <div className="aspect-[3/4] w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 relative group glass-card">
               <img 
-                src={manga.coverUrlHQ ? `${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(manga.coverUrlHQ)}&source=${source}` : '/warning.svg'}
+                src={manga.coverUrlHQ ? getSecureProxyUrl(manga.coverUrlHQ, source) : '/warning.svg'}
                 alt={manga.title}
                 className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-300 ${!manga.coverUrlHQ ? 'object-contain p-8 opacity-50' : ''}`}
                 onError={(e) => { e.currentTarget.src = '/warning.svg'; e.currentTarget.className = 'w-full h-full object-cover group-hover:scale-105 transition-all duration-300 object-contain p-8 opacity-50'; }}

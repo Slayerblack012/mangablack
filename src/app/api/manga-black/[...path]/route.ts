@@ -45,8 +45,25 @@ export async function GET(
     const { searchParams } = new URL(request.url);
     const newParams = new URLSearchParams(searchParams.toString());
 
+    // Security Shield 1: Validate Referrer to block external scraping/hotlinking
+    const referer = request.headers.get('referer');
+    const host = request.headers.get('host') || '';
+    if (referer) {
+      try {
+        const refererUrl = new URL(referer);
+        const isSelfOrigin = 
+          refererUrl.hostname === 'localhost' || 
+          refererUrl.hostname === '127.0.0.1' || 
+          host.includes(refererUrl.hostname) ||
+          refererUrl.hostname.includes(host.split(':')[0]);
+        if (!isSelfOrigin) {
+          return new Response('Forbidden: Untrusted origin', { status: 403 });
+        }
+      } catch (e) {}
+    }
+
     // Security Mapping: client uses (global/vn) -> backend uses (mangadex/otruyen)
-    let source = newParams.get('source') || 'mangadex';
+    let source = newParams.get('s') || newParams.get('source') || 'mangadex';
     if (source === 'global') source = 'mangadex';
     if (source === 'vn') source = 'otruyen';
 
@@ -54,8 +71,16 @@ export async function GET(
     let resultData: any = null;
 
     if (subPath === 'crawler/proxy-image') {
-      const url = newParams.get('url');
-      if (!url) return NextResponse.json({ error: 'No URL provided' }, { status: 400 });
+      const urlParam = newParams.get('q') || newParams.get('url');
+      if (!urlParam) return NextResponse.json({ error: 'No URL provided' }, { status: 400 });
+      
+      let url = urlParam;
+      if (newParams.get('q')) {
+        try {
+          // Decode the Base64 obfuscated URL safely
+          url = atob(decodeURIComponent(urlParam));
+        } catch (e) {}
+      }
       
       let retryCount = 3;
       let response: Response | null = null;

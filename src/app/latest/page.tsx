@@ -6,7 +6,7 @@ import { Calendar, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Arrow
 import Link from 'next/link';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { API_BASE } from '../config';
+import { API_BASE, getSecureProxyUrl } from '../config';
 
 interface MangaItem {
   id: string;
@@ -27,7 +27,7 @@ function MangaCard({ manga, source }: { manga: MangaItem; source: string }) {
       <div className="flex flex-col gap-3">
         <div className="aspect-[3/4] w-full rounded-xl overflow-hidden border border-white/5 relative glass-card shadow-lg">
           <img 
-            src={manga.coverUrl ? `${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(manga.coverUrl)}&source=${source}` : '/warning.svg'}
+            src={manga.coverUrl ? getSecureProxyUrl(manga.coverUrl, source) : '/warning.svg'}
             alt={manga.title}
             loading="lazy"
             className={`w-full h-full object-cover group-hover:scale-110 transition-all duration-300 ${!manga.coverUrl ? 'object-contain p-4 opacity-50' : ''}`}

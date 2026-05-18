@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Clock, Trash2, BookOpen, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { API_BASE } from '../config';
+import { API_BASE, getSecureProxyUrl } from '../config';
 
 interface HistoryItem {
   mangaId: string;
@@ -136,7 +136,7 @@ export default function HistoryDrawer() {
                     className="h-20 w-15 rounded-lg overflow-hidden border border-white/[0.08] flex-shrink-0 bg-slate-950 relative group cursor-pointer shadow-md"
                   >
                     <img
-                      src={item.coverUrl ? `${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(item.coverUrl)}&source=${item.source}` : '/warning.svg'}
+                      src={item.coverUrl ? getSecureProxyUrl(item.coverUrl, item.source) : '/warning.svg'}
                       alt={item.mangaTitle}
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => { e.currentTarget.src = '/warning.svg'; }}

@@ -4,7 +4,7 @@ import { useState, useEffect, use, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, ChevronLeft, ChevronRight, Settings, Info, RefreshCw, Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
-import { API_BASE } from '@/app/config';
+import { API_BASE, getSecureProxyUrl } from '@/app/config';
 
 interface PagesResponse {
   quality: string[];
@@ -220,7 +220,7 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
 
               {/* Compressed image */}
               <img 
-                src={`${API_BASE}/crawler/proxy-image?url=${encodeURIComponent(imgUrl)}&source=${source}`}
+                src={getSecureProxyUrl(imgUrl, source)}
                 alt={`Trang ${index + 1}`}
                 loading="lazy"
                 className="w-full h-auto object-contain relative z-10 block pointer-events-none"
