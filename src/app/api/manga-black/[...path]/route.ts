@@ -139,7 +139,8 @@ export async function GET(
       return new Response(arrayBuffer as any, {
         headers: {
           'Content-Type': contentType,
-          'Cache-Control': 'public, max-age=86400, stale-while-revalidate=43200',
+          // Ultimate CDN image caching: 1 year cache, immutable, stale-while-revalidate
+          'Cache-Control': 'public, max-age=31536000, s-maxage=31536000, stale-while-revalidate=604800, immutable',
         },
       });
     } 
@@ -194,9 +195,29 @@ export async function GET(
     }
 
     const cleanData = sanitizeData(resultData);
+
+    // Dynamic Edge Caching policy mapping based on endpoint resource type
+    let cachePolicy = 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    
+    if (subPath.startsWith('crawler/chapter/') && subPath.endsWith('/pages')) {
+      // Published chapter image lists never change: cache for 7 days
+      cachePolicy = 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=86400, immutable';
+    } else if (subPath === 'crawler/chapter-pages') {
+      cachePolicy = 'public, max-age=604800, s-maxage=604800, stale-while-revalidate=86400, immutable';
+    } else if (subPath.startsWith('crawler/manga/') && subPath.endsWith('/chapters')) {
+      // Chapter updates check: cache for 15 minutes on the CDN
+      cachePolicy = 'public, max-age=900, s-maxage=900, stale-while-revalidate=300';
+    } else if (subPath.startsWith('crawler/manga/')) {
+      // Manga descriptions and metadata: cache for 30 minutes
+      cachePolicy = 'public, max-age=1800, s-maxage=1800, stale-while-revalidate=600';
+    } else if (subPath === 'crawler/tags') {
+      // Tags list: cache for 24 hours
+      cachePolicy = 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=7200';
+    }
+
     return NextResponse.json(cleanData, {
       headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+        'Cache-Control': cachePolicy,
       }
     });
     
