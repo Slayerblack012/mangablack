@@ -1,6 +1,6 @@
 # MANGA-BLACK - Thiên Đường Truyện Tranh Cho Wibu & Otaku
 
-Chào mừng các Wibu và Otaku chân chính đến với **MANGA-BLACK** — Thế giới đọc truyện tranh trực tuyến tối thượng, mang lại trải nghiệm đọc truyện tuyệt đỉnh, hoàn toàn mượt mà và không chứa quảng cáo. 
+Chào mừng các Wibu và Otaku chân chính đến với **MANGA-BLACK** — Thế giới đọc truyện tranh trực tuyến tối thượng, mang lại trải nghiệm đọc truyện tuyệt đỉnh, hoàn toàn mượt mà và sắc nét. 
 
 Đặc biệt, giao diện nền tảng được lấy cảm hứng sâu sắc từ **Hệ Thống Solo Leveling / Hoàng Đế Bóng Tối**, mang lại cảm giác thức tỉnh sức mạnh nhập vai có một không hai!
 
@@ -14,7 +14,7 @@ Chào mừng các Wibu và Otaku chân chính đến với **MANGA-BLACK** — T
 
 2. **Hạ Tầng Tải Trang Siêu Tốc Cho Wibu**:
    * Toàn bộ các đường truyền kết nối đến các kho tàng truyện lớn trong nước và quốc tế đều được xử lý khép kín và an toàn tuyệt đối.
-   * Trải nghiệm mượt mà hoàn toàn không chứa quảng cáo, bảo vệ tuyệt đối thiết bị của bạn.
+   * Trải nghiệm mượt mà siêu tốc, bảo vệ tuyệt đối thiết bị của bạn.
 
 3. **Giao Diện Hệ Thống Độc Quyền (Solo Leveling Cyber HUD)**:
    * **Hào quang Bóng Tối (Solo Leveling Aura)**: Lớp phủ sương mù năng lượng bóng tối chuyển động huyền ảo ở các viền màn hình, tạo chiều sâu nghệ thuật.
