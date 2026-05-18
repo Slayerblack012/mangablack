@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { crawlerService } from '../../../../services/crawler.service';
-import sharp from 'sharp';
 
 // De quy lam sach du lieu nguon tra ve tu backend truoc khi phan hoi Client
 function sanitizeData(obj: any): any {
@@ -77,26 +76,14 @@ export async function GET(
       }
 
       const arrayBuffer = await response.arrayBuffer();
+      const contentType = response.headers.get('content-type') || 'image/jpeg';
       
-      try {
-        const webpBuffer = await sharp(Buffer.from(arrayBuffer))
-          .webp({ quality: 75, effort: 2 })
-          .toBuffer();
-          
-        return new Response(webpBuffer as any, {
-          headers: {
-            'Content-Type': 'image/webp',
-            'Cache-Control': 'public, max-age=86400, stale-while-revalidate=43200',
-          },
-        });
-      } catch (err) {
-        return new Response(arrayBuffer as any, {
-          headers: {
-            'Content-Type': response.headers.get('content-type') || 'image/jpeg',
-            'Cache-Control': 'public, max-age=86400',
-          }
-        });
-      }
+      return new Response(arrayBuffer as any, {
+        headers: {
+          'Content-Type': contentType,
+          'Cache-Control': 'public, max-age=86400, stale-while-revalidate=43200',
+        },
+      });
     } 
     
     else if (subPath === 'crawler/search') {
