@@ -4,6 +4,7 @@ import "./globals.css";
 
 import SoloLevelingAura from "./components/SoloLevelingAura";
 import SystemWelcomePopup from "./components/SystemWelcomePopup";
+import HistoryDrawer from "./components/HistoryDrawer";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin", "vietnamese"],
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={`${plusJakartaSans.className} antialiased`}>
         <SoloLevelingAura />
         <SystemWelcomePopup />
+        <HistoryDrawer />
         {children}
       </body>
     </html>

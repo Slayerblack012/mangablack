@@ -37,6 +37,7 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
   const [chapters, setChapters] = useState<ChapterItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingChapters, setLoadingChapters] = useState<boolean>(true);
+  const [syncing, setSyncing] = useState<boolean>(false);
 
   // States bo loc chuong truyen
   const [chapterQuery, setChapterQuery] = useState<string>('');
@@ -51,11 +52,50 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [lastReadChapter, setLastReadChapter] = useState<{ id: string; num: string } | null>(null);
 
+  const handleForceSync = async () => {
+    if (syncing) return;
+    setSyncing(true);
+    try {
+      // 1. Dong bo chi tiet bypass cache
+      const detailRes = await fetch(`${API_BASE}/crawler/manga/${id}?source=${source}&bypassCache=true`);
+      if (detailRes.ok) {
+        const detailData = await detailRes.json();
+        setManga(detailData);
+      }
+      
+      // 2. Dong bo chuong bypass cache
+      const chaptersRes = await fetch(`${API_BASE}/crawler/manga/${id}/chapters?source=${source}&limit=99999&bypassCache=true${selectedLang ? `&lang=${selectedLang}` : ''}`);
+      if (chaptersRes.ok) {
+        const chaptersData = await chaptersRes.json();
+        setChapters(chaptersData.data || []);
+        if (chaptersData.availableLanguages && chaptersData.availableLanguages.length > 0) {
+          setAvailableLangs(chaptersData.availableLanguages);
+        }
+      }
+      
+      // Cap nhat lich su doc an toan
+      checkReadHistory();
+    } catch (e) {
+      console.error('Loi khi dong bo nong:', e);
+    } finally {
+      setTimeout(() => {
+        setSyncing(false);
+      }, 800);
+    }
+  };
+
   useEffect(() => {
     fetchDetail();
     checkFavoriteStatus();
     checkReadHistory();
   }, [source, id]);
+
+  // Synchronize history updates if changed elsewhere
+  useEffect(() => {
+    const handleHistoryUpdate = () => checkReadHistory();
+    window.addEventListener('manga-history-updated', handleHistoryUpdate);
+    return () => window.removeEventListener('manga-history-updated', handleHistoryUpdate);
+  }, [id, source]);
 
   useEffect(() => {
     fetchChapters(selectedLang);
@@ -148,11 +188,53 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col justify-between">
+      <div className="min-h-screen flex flex-col justify-between relative">
         <Header />
-        <div className="flex-grow flex items-center justify-center">
-          <div className="text-purple-400 font-bold animate-pulse text-lg">Tải luồng thông tin truyện...</div>
-        </div>
+        
+        <main className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full relative z-10">
+          <div className="h-4 w-32 rounded bg-white/5 mb-8 skeleton-shimmer"></div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 items-start mb-12">
+            {/* Poster cover skeleton */}
+            <div className="col-span-1 flex flex-col gap-4">
+              <div className="aspect-[3/4] w-full rounded-2xl border border-white/5 skeleton-shimmer"></div>
+              <div className="h-10 w-full rounded-xl border border-white/5 skeleton-shimmer"></div>
+            </div>
+            
+            {/* Metadata lines skeleton */}
+            <div className="col-span-1 md:col-span-3 text-left flex flex-col gap-6">
+              <div>
+                <div className="h-5 w-24 rounded-full bg-white/5 mb-3 skeleton-shimmer"></div>
+                <div className="h-12 w-3/4 rounded-xl border border-white/5 skeleton-shimmer"></div>
+              </div>
+              <div className="h-16 w-full rounded-2xl border border-white/5 skeleton-shimmer"></div>
+              <div className="flex flex-col gap-2">
+                <div className="h-3.5 w-28 rounded bg-white/5 skeleton-shimmer"></div>
+                <div className="h-4 w-full rounded bg-white/3 skeleton-shimmer"></div>
+                <div className="h-4 w-5/6 rounded bg-white/3 skeleton-shimmer"></div>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <div className="h-3.5 w-20 rounded bg-white/5 skeleton-shimmer"></div>
+                <div className="flex gap-2">
+                  <div className="h-6 w-16 rounded-md bg-white/5 skeleton-shimmer"></div>
+                  <div className="h-6 w-20 rounded-md bg-white/5 skeleton-shimmer"></div>
+                  <div className="h-6 w-24 rounded-md bg-white/5 skeleton-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Chapters list box skeleton */}
+          <div className="glass-panel p-6 border border-white/5 flex flex-col gap-4">
+            <div className="h-6 w-48 rounded bg-white/5 skeleton-shimmer"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-14 rounded-xl border border-white/5 skeleton-shimmer"></div>
+              ))}
+            </div>
+          </div>
+        </main>
+        
         <Footer />
       </div>
     );
@@ -314,9 +396,24 @@ export default function MangaDetailPage({ params }: { params: Promise<{ source: 
           
           {/* Header & Filter HUD */}
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pb-5 border-b border-white/10 mb-6 text-left">
-            <h2 className="text-lg font-black text-white flex items-center gap-2">
-              <BookOpen className="h-5 w-5 text-purple-400" /> DANH SÁCH CHƯƠNG TRUYỆN
-            </h2>
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-black text-white flex items-center gap-2">
+                <BookOpen className="h-5 w-5 text-[#39C5BB]" /> DANH SÁCH CHƯƠNG TRUYỆN
+              </h2>
+              
+              {/* Force Sync button */}
+              <button
+                onClick={handleForceSync}
+                disabled={syncing}
+                className={`p-1.5 rounded-lg border border-[#39C5BB]/20 hover:border-[#39C5BB]/50 bg-[#39C5BB]/5 hover:bg-[#39C5BB]/10 text-[#39C5BB] flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm group active:scale-95 ${
+                  syncing ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+                title="Đồng bộ nóng với máy chủ gốc (Lấy mới ngay lập tức)"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${syncing ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
+                <span className="text-[9px] font-black uppercase tracking-widest hidden xs:inline">Đồng bộ nguồn</span>
+              </button>
+            </div>
             
             {/* Filter controls */}
             <div className="flex flex-wrap items-center gap-2 flex-1 sm:max-w-md justify-end">

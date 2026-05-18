@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, Compass } from 'lucide-react';
+import { Search, Compass, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { MANGA_SOURCES } from '../config';
 
@@ -79,10 +79,17 @@ export default function Header() {
           <div className="flex items-center gap-4">
             
             {/* Nav links */}
-            <nav className="hidden lg:flex items-center gap-1 text-sm font-semibold">
-              <Link href="/" className="px-3 py-1.5 rounded-md hover:bg-white/5 text-gray-300 hover:text-white transition flex items-center gap-1.5">
+            <nav className="flex items-center gap-1 text-sm font-semibold">
+              <Link href="/" className="hidden lg:flex px-3 py-1.5 rounded-md hover:bg-white/5 text-gray-300 hover:text-white transition items-center gap-1.5">
                 <Compass className="h-4 w-4" /> Khám Phá
               </Link>
+              <button 
+                onClick={() => window.dispatchEvent(new Event('manga-open-history'))}
+                className="px-3 py-1.5 rounded-md bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white border border-white/5 hover:border-cyan-500/30 transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+                title="Lịch sử đọc truyện"
+              >
+                <Clock className="h-4 w-4 text-cyan-400" /> <span>Lịch Sử</span>
+              </button>
             </nav>
 
             {/* Source Switcher */}

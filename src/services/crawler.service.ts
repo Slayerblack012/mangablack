@@ -12,14 +12,14 @@ class CrawlerService {
     return mangadexService.browseManga(query);
   }
 
-  getMangaDetail(id: string, source?: string) {
-    if (source === 'otruyen') return otruyenService.getMangaDetail(id);
-    return mangadexService.getMangaDetail(id);
+  getMangaDetail(id: string, source?: string, bypassCache?: boolean) {
+    if (source === 'otruyen') return otruyenService.getMangaDetail(id, bypassCache);
+    return mangadexService.getMangaDetail(id, bypassCache);
   }
 
-  getChapterFeed(id: string, offset: number, limit: number, lang?: string, order: 'asc' | 'desc' = 'asc', source?: string) {
-    if (source === 'otruyen') return otruyenService.getChapterFeed(id, offset, limit, order);
-    return mangadexService.getChapterFeed(id, offset, limit, lang, order);
+  getChapterFeed(id: string, offset: number, limit: number, lang?: string, order: 'asc' | 'desc' = 'asc', source?: string, bypassCache?: boolean) {
+    if (source === 'otruyen') return otruyenService.getChapterFeed(id, offset, limit, order, bypassCache);
+    return mangadexService.getChapterFeed(id, offset, limit, lang, order, bypassCache);
   }
 
   getChapterPages(id: string, source?: string) {

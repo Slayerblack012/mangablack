@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { crawlerService } from '../../../../services/crawler.service';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // De quy lam sach du lieu nguon tra ve tu backend truoc khi phan hoi Client
 function sanitizeData(obj: any): any {
   if (obj === null || obj === undefined) return obj;
@@ -47,6 +50,7 @@ export async function GET(
     if (source === 'global') source = 'mangadex';
     if (source === 'vn') source = 'otruyen';
 
+    const bypassCache = newParams.get('bypassCache') === 'true';
     let resultData: any = null;
 
     if (subPath === 'crawler/proxy-image') {
@@ -110,12 +114,13 @@ export async function GET(
         Number(newParams.get('limit')) || 100, 
         newParams.get('lang') || undefined,
         (newParams.get('order') as 'asc' | 'desc') || 'asc',
-        source
+        source,
+        bypassCache
       );
     }
     else if (subPath.startsWith('crawler/manga/')) {
       const id = pathArray[2];
-      resultData = await crawlerService.getMangaDetail(id, source);
+      resultData = await crawlerService.getMangaDetail(id, source, bypassCache);
     }
     else if (subPath.startsWith('crawler/chapter/') && subPath.endsWith('/pages')) {
       const id = pathArray[2];
@@ -135,7 +140,11 @@ export async function GET(
     }
 
     const cleanData = sanitizeData(resultData);
-    return NextResponse.json(cleanData);
+    return NextResponse.json(cleanData, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      }
+    });
     
   } catch (error: any) {
     return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });

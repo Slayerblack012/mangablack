@@ -85,7 +85,7 @@ class OtruyenService {
       let response;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(title)}`);
+          const res = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(title)}`, { cache: 'no-store' });
           if (res.ok) {
             response = await res.json();
             if (response.data?.items && response.data.items.length > 0) break;
@@ -101,7 +101,7 @@ class OtruyenService {
         .map((item: any) => this.parseManga(item, `${domain}/uploads/comics`));
       
       if (path.length > 0) {
-        this.setCache(cacheKey, path, 60 * 60 * 1000);
+        this.setCache(cacheKey, path, 30 * 1000);
       }
       return path;
     } catch {
@@ -138,7 +138,7 @@ class OtruyenService {
       let response;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`${this.baseUrl}/${endpoint}?page=${page}`);
+          const res = await fetch(`${this.baseUrl}/${endpoint}?page=${page}`, { cache: 'no-store' });
           if (res.ok) {
             response = await res.json();
             if (response.data?.items && response.data.items.length > 0) break;
@@ -161,7 +161,7 @@ class OtruyenService {
       };
 
       if (parsed.length > 0) {
-        this.setCache(cacheKey, result, 300 * 1000);
+        this.setCache(cacheKey, result, 10 * 1000);
       }
       return result;
     } catch {
@@ -169,8 +169,11 @@ class OtruyenService {
     }
   }
 
-  async getMangaDetail(slug: string) {
+  async getMangaDetail(slug: string, bypassCache: boolean = false) {
     const cacheKey = `otruyen-detail-${slug}`;
+    if (bypassCache) {
+      this.cache.delete(cacheKey);
+    }
     const cached = await this.getCached(cacheKey);
     if (cached) return cached;
 
@@ -178,7 +181,7 @@ class OtruyenService {
       let response;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`);
+          const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, { cache: 'no-store' });
           if (res.ok) {
             response = await res.json();
             if (response.data?.item) break;
@@ -193,7 +196,7 @@ class OtruyenService {
       const parsed = this.parseManga(response.data.item, `${domain}/uploads/comics`);
       
       if (parsed) {
-        this.setCache(cacheKey, parsed, 60 * 60 * 1000);
+        this.setCache(cacheKey, parsed, 15 * 1000);
       }
       return parsed;
     } catch {
@@ -201,8 +204,11 @@ class OtruyenService {
     }
   }
 
-  async getChapterFeed(slug: string, offset: number = 0, limit: number = 100, order: 'asc' | 'desc' = 'asc') {
+  async getChapterFeed(slug: string, offset: number = 0, limit: number = 100, order: 'asc' | 'desc' = 'asc', bypassCache: boolean = false) {
     const cacheKey = `otruyen-feed-v2-${slug}`;
+    if (bypassCache) {
+      this.cache.delete(cacheKey);
+    }
     let cachedFeed = await this.getCached(cacheKey);
     
     if (!cachedFeed) {
@@ -210,7 +216,7 @@ class OtruyenService {
         let response;
         for (let i = 0; i < 3; i++) {
           try {
-            const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`);
+            const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, { cache: 'no-store' });
             if (res.ok) {
               response = await res.json();
               if (response.data?.item?.chapters) break;
@@ -221,7 +227,39 @@ class OtruyenService {
 
         if (!response || !response.data?.item) throw new Error('API failed');
 
-        const servers = response.data.item.chapters || [];
+        let servers = response.data.item.chapters || [];
+        
+        // --- SMART SEARCH FALLBACK FOR "0 CHAPTERS" BUG ---
+        if (servers.length === 0 || (servers.length === 1 && (!servers[0].server_data || servers[0].server_data.length === 0))) {
+          const mangaTitle = response.data.item.name || '';
+          if (mangaTitle) {
+            try {
+              const searchRes = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(mangaTitle)}`, { cache: 'no-store' });
+              if (searchRes.ok) {
+                const searchData = await searchRes.json();
+                const searchItems = searchData.data?.items || [];
+                for (const item of searchItems) {
+                  if (item.slug !== slug) {
+                    const altRes = await fetch(`${this.baseUrl}/truyen-tranh/${item.slug}`, { cache: 'no-store' });
+                    if (altRes.ok) {
+                      const altData = await altRes.json();
+                      const altChapters = altData?.data?.item?.chapters || [];
+                      const hasAltChapters = altChapters.some((s: any) => s.server_data && s.server_data.length > 0);
+                      if (hasAltChapters) {
+                        servers = altChapters;
+                        break;
+                      }
+                    }
+                  }
+                }
+              }
+            } catch (e) {
+              console.error('Smart fallback search failed in OtruyenService:', e);
+            }
+          }
+        }
+        // --------------------------------------------------
+
         const uniqueChaptersMap = new Map<string, any>();
         
         // Gop toan bo chuong tu tat ca cac servers de tranh mat thong tin va dam bao lay day du 100%
@@ -253,7 +291,7 @@ class OtruyenService {
         });
 
         cachedFeed = { chapters };
-        this.setCache(cacheKey, cachedFeed, 60 * 1000);
+        this.setCache(cacheKey, cachedFeed, 5 * 1000);
       } catch {
         return { data: [], total: 0, availableLanguages: ['vi'], offset, nextOffset: offset };
       }
@@ -278,7 +316,7 @@ class OtruyenService {
       let response;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`https://sv1.otruyencdn.com/v1/api/chapter/${chapterId}`);
+          const res = await fetch(`https://sv1.otruyencdn.com/v1/api/chapter/${chapterId}`, { cache: 'no-store' });
           if (res.ok) {
             response = await res.json();
             if (response.data?.item?.chapter_image) break;
@@ -308,7 +346,7 @@ class OtruyenService {
 
   async getTags() {
     try {
-      const res = await fetch(`${this.baseUrl}/the-loai`);
+      const res = await fetch(`${this.baseUrl}/the-loai`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const response = await res.json();
 

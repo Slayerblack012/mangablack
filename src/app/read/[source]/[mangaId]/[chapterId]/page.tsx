@@ -72,20 +72,36 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
   };
 
   // Save reading history for continuation
-  const saveReadHistory = () => {
-    const history = JSON.parse(localStorage.getItem('manga_history') || '[]');
-    const filtered = history.filter((h: any) => !(h.mangaId === mangaId && h.source === source));
-    
-    filtered.unshift({
-      mangaId,
-      source,
-      chapterId,
-      chapterNum: chapNum,
-      timestamp: Date.now()
-    });
+  const saveReadHistory = async () => {
+    try {
+      // Lightweight parallel fetch to get manga title and cover
+      const res = await fetch(`${API_BASE}/crawler/manga/${mangaId}?source=${source}`);
+      const mangaData = await res.json();
+      
+      const mangaTitle = mangaData?.title || 'Manga';
+      const coverUrl = mangaData?.coverUrl || '';
 
-    // Chi luu toi da 50 truyen doc gan nhat de tiet kiem bo nho local
-    localStorage.setItem('manga_history', JSON.stringify(filtered.slice(0, 50)));
+      const history = JSON.parse(localStorage.getItem('manga_history') || '[]');
+      const filtered = history.filter((h: any) => !(h.mangaId === mangaId && h.source === source));
+      
+      filtered.unshift({
+        mangaId,
+        source,
+        chapterId,
+        chapterNum: chapNum,
+        mangaTitle,
+        coverUrl,
+        timestamp: Date.now()
+      });
+
+      // Chi luu toi da 50 truyen doc gan nhat de tiet kiem bo nho local
+      localStorage.setItem('manga_history', JSON.stringify(filtered.slice(0, 50)));
+
+      // Dispatch a storage update event so the drawer or any active component updates
+      window.dispatchEvent(new Event('manga-history-updated'));
+    } catch (e) {
+      console.error('Loi khi luu lich su doc:', e);
+    }
   };
 
   const handleNextChapter = () => {
@@ -176,9 +192,16 @@ function ReaderContent({ source, mangaId, chapterId }: { source: string; mangaId
         onClick={() => setHudVisible(!hudVisible)}
       >
         {loading ? (
-          <div className="py-40 flex flex-col items-center justify-center gap-3">
-            <RefreshCw className="h-8 w-8 text-purple-500 animate-spin" />
-            <p className="text-purple-400 font-bold text-xs animate-pulse tracking-wider">ĐANG GIẢI MÃ CDN & NÉN WEB-P...</p>
+          <div className="flex flex-col gap-6 w-full py-4 px-4 md:px-0">
+            <div className="w-full h-[600px] rounded-xl border border-white/5 skeleton-shimmer flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase animate-pulse">Kích hoạt trang số 1...</span>
+            </div>
+            <div className="w-full h-[600px] rounded-xl border border-white/5 skeleton-shimmer flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase animate-pulse">Đang giải mã CDN trang số 2...</span>
+            </div>
+            <div className="w-full h-[600px] rounded-xl border border-white/5 skeleton-shimmer flex items-center justify-center relative overflow-hidden">
+              <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase animate-pulse">Tải trước trang số 3...</span>
+            </div>
           </div>
         ) : pages.length === 0 ? (
           <div className="py-32 text-center text-red-400 font-bold text-sm bg-white/5 border border-white/5 rounded-2xl mx-4">

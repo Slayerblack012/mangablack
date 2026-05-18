@@ -62,6 +62,7 @@ class MangadexService {
 
     try {
       const response = await fetch(fullUrl, {
+        cache: 'no-store',
         headers: {
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
         }
@@ -204,7 +205,7 @@ class MangadexService {
         'contentRating[]': ['safe', 'suggestive'],
         hasAvailableChapters: true,
       });
-      const data = await this.safeGet(`${this.baseUrl}/manga?${qs}`, {}, false, 3600 * 1000);
+      const data = await this.safeGet(`${this.baseUrl}/manga?${qs}`, {}, false, 10 * 1000);
       return (data.data || []).map((manga: any) => this.parseManga(manga));
     } catch {
       return [];
@@ -262,20 +263,27 @@ class MangadexService {
     }
   }
 
-  async getMangaDetail(mangaDexId: string) {
+  async getMangaDetail(mangaDexId: string, bypassCache: boolean = false) {
     try {
       const qs = this.buildQueryString({
         'includes[]': ['cover_art', 'author', 'artist'],
       });
-      const data = await this.safeGet(`${this.baseUrl}/manga/${mangaDexId}?${qs}`, {}, false, 60 * 60 * 1000);
+      if (bypassCache) {
+        this.cache.delete('v2_' + `${this.baseUrl}/manga/${mangaDexId}?${qs}`);
+      }
+      const data = await this.safeGet(`${this.baseUrl}/manga/${mangaDexId}?${qs}`, {}, bypassCache, 15 * 1000);
       return this.parseManga(data.data);
     } catch (e: any) {
       return null;
     }
   }
 
-  async getChapterFeed(mangaId: string, offset: number = 0, limit: number = 100, lang?: string, order: 'asc' | 'desc' = 'asc') {
+  async getChapterFeed(mangaId: string, offset: number = 0, limit: number = 100, lang?: string, order: 'asc' | 'desc' = 'asc', bypassCache: boolean = false) {
     const feedCacheKey = `feed-${mangaId}-${lang || 'all'}`;
+    if (bypassCache) {
+      this.cache.delete(feedCacheKey);
+      this.cache.delete(`feed-${mangaId}-all`);
+    }
     const cachedFeed = await this.getCached(feedCacheKey);
     
     let filteredChapters: any[];
@@ -300,7 +308,7 @@ class MangadexService {
           if (lang) params['translatedLanguage[]'] = [lang];
 
           const qs = this.buildQueryString(params);
-          const fullData = await this.safeGet(`${this.baseUrl}/manga/${mangaId}/feed?${qs}`, {}, false, 60 * 1000);
+          const fullData = await this.safeGet(`${this.baseUrl}/manga/${mangaId}/feed?${qs}`, {}, bypassCache, 5 * 1000);
           const batch = fullData.data || [];
           allRaw.push(...batch);
           
@@ -321,7 +329,22 @@ class MangadexService {
             group: ch.relationships?.find((r: any) => r.type === 'scanlation_group')?.attributes?.name || 'Scanlation Group',
           }));
 
+        const langCounts: Record<string, number> = {};
+        parsedChapters.forEach(ch => {
+          if (ch.lang) {
+            langCounts[ch.lang] = (langCounts[ch.lang] || 0) + 1;
+          }
+        });
+
         availableLanguages = Array.from(new Set(parsedChapters.map(ch => ch.lang)));
+        availableLanguages.sort((a, b) => {
+          if (a === 'vi') return -1;
+          if (b === 'vi') return 1;
+          if (a === 'en') return -1;
+          if (b === 'en') return 1;
+          return (langCounts[b] || 0) - (langCounts[a] || 0);
+        });
+
         const uniqueChaptersMap = new Map<string, any>();
         
         if (lang) {
@@ -345,7 +368,7 @@ class MangadexService {
 
         filteredChapters = Array.from(uniqueChaptersMap.values());
         filteredChapters.sort((a, b) => (parseFloat(a.chapter) || 0) - (parseFloat(b.chapter) || 0));
-        this.setCache(feedCacheKey, { chapters: filteredChapters, languages: availableLanguages }, 60 * 1000);
+        this.setCache(feedCacheKey, { chapters: filteredChapters, languages: availableLanguages }, 5 * 1000);
       } catch (e: any) {
         return { data: [], total: 0, availableLanguages: [], offset, nextOffset: offset };
       }
