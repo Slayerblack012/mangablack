@@ -19,6 +19,7 @@ export default function HistoryDrawer() {
   const [isOpen, setIsOpen] = useState(false);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -54,11 +55,7 @@ export default function HistoryDrawer() {
   };
 
   const clearAllHistory = () => {
-    if (confirm('Hệ thống sẽ xoá toàn bộ lịch sử đọc truyện của bạn. Xác nhận thực hiện?')) {
-      localStorage.removeItem('manga_history');
-      setHistory([]);
-      window.dispatchEvent(new Event('manga-history-updated'));
-    }
+    setShowConfirm(true);
   };
 
   const getRelativeTime = (timestamp: number) => {
@@ -211,6 +208,54 @@ export default function HistoryDrawer() {
           </div>
         )}
       </div>
+
+      {/* Custom Solo Leveling-inspired System Prompt Alert */}
+      {showConfirm && (
+        <div className="fixed inset-0 bg-black/85 backdrop-blur-md z-[999999] flex items-center justify-center select-none transition-all duration-300 animate-fade-in">
+          <div className="relative w-full max-w-sm mx-4 bg-[#07090e] border-2 border-red-500/40 rounded p-6 shadow-[0_0_50px_rgba(239,68,68,0.15)] text-center font-mono overflow-hidden">
+            {/* Solo Leveling neon-red ambient radial lighting */}
+            <div className="absolute inset-0 bg-gradient-to-b from-red-500/[0.03] to-transparent pointer-events-none" />
+            
+            <div className="text-[10px] font-black text-red-500 tracking-[0.25em] uppercase mb-2 animate-pulse">
+              🚨 HỆ THỐNG CẢNH BÁO 🚨
+            </div>
+            
+            <h3 className="text-sm font-black text-white tracking-widest uppercase mb-4 border-b border-red-500/20 pb-3">
+              [ reset lịch sử đọc ]
+            </h3>
+            
+            <div className="text-xs text-slate-300 leading-relaxed mb-6 font-semibold">
+              <p className="mb-3">Bạn có chắc chắn muốn thi hành chỉ thị xóa bỏ toàn bộ lịch sử đọc truyện?</p>
+              
+              <div className="bg-black/50 p-3 rounded border border-white/[0.04] text-[10px] text-slate-400 text-left leading-normal">
+                <span className="text-red-400 font-bold block mb-1">HỆ THỐNG CẢNH BÁO:</span>
+                Sau khi được thi hành, toàn bộ bản ghi tiến trình đọc truyện của ký chủ sẽ bị xóa bỏ vĩnh viễn khỏi phân khu lưu trữ cục bộ.
+              </div>
+            </div>
+            
+            <div className="flex gap-3 justify-center font-black">
+              <button
+                onClick={() => {
+                  localStorage.removeItem('manga_history');
+                  setHistory([]);
+                  window.dispatchEvent(new Event('manga-history-updated'));
+                  setShowConfirm(false);
+                }}
+                className="flex-1 py-2 border border-red-500 bg-red-950/40 text-red-400 hover:bg-red-500 hover:text-white rounded active:scale-95 transition duration-200 text-[10px] uppercase tracking-wider cursor-pointer shadow-[0_0_15px_rgba(239,68,68,0.1)] hover:shadow-[0_0_25px_rgba(239,68,68,0.35)] animate-glow"
+              >
+                [ CHẤP NHẬN ]
+              </button>
+              
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 py-2 border border-slate-700 bg-slate-900/40 text-slate-300 hover:bg-slate-700 hover:text-white rounded active:scale-95 transition duration-200 text-[10px] uppercase tracking-wider cursor-pointer"
+              >
+                [ TỪ CHỐI ]
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
