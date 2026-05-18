@@ -4,6 +4,12 @@ import { crawlerService } from '../../../../services/crawler.service';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
+// Lightweight in-memory Inbound Anti-DoS / DoS Guard
+const requestTracker = new Map<string, { count: number; resetTime: number }>();
+const DOS_LIMIT = 90; // max 90 requests per minute
+const DOS_WINDOW = 60 * 1000; // 1 minute
+
+
 // De quy lam sach du lieu nguon tra ve tu backend truoc khi phan hoi Client
 function sanitizeData(obj: any): any {
   if (obj === null || obj === undefined) return obj;
@@ -38,6 +44,29 @@ export async function GET(
   { params }: { params: Promise<{ path: string[] }> }
 ) {
   try {
+    // Inbound Anti-DoS / DoS Shield
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0] || 
+                     request.headers.get('x-real-ip') || 
+                     'anonymous_client';
+    const currentTime = Date.now();
+    const rateData = requestTracker.get(clientIp);
+
+    if (rateData) {
+      if (currentTime > rateData.resetTime) {
+        requestTracker.set(clientIp, { count: 1, resetTime: currentTime + DOS_WINDOW });
+      } else {
+        rateData.count++;
+        if (rateData.count > DOS_LIMIT) {
+          return new Response('Too Many Requests: System Anti-DoS Triggered', { 
+            status: 429,
+            headers: { 'Retry-After': '60' }
+          });
+        }
+      }
+    } else {
+      requestTracker.set(clientIp, { count: 1, resetTime: currentTime + DOS_WINDOW });
+    }
+
     const resolvedParams = await params;
     const pathArray = resolvedParams.path || [];
     const subPath = pathArray.join('/');

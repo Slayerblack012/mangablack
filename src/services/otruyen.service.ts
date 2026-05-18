@@ -7,6 +7,7 @@ import {
   TagItem, 
   BrowseOptions 
 } from './types';
+import { getRandomSpoofedHeaders } from '../app/config';
 
 /**
  * OtruyenService
@@ -122,7 +123,10 @@ class OtruyenService {
       // Implement retry buffer
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(title)}`, { cache: 'no-store' });
+          const res = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(title)}`, {
+            cache: 'no-store',
+            headers: getRandomSpoofedHeaders()
+          });
           if (res.ok) {
             response = await res.json();
             if (response.data?.items && response.data.items.length > 0) break;
@@ -172,7 +176,10 @@ class OtruyenService {
       let response: any;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`${this.baseUrl}/${endpoint}?page=${page}`, { cache: 'no-store' });
+          const res = await fetch(`${this.baseUrl}/${endpoint}?page=${page}`, {
+            cache: 'no-store',
+            headers: getRandomSpoofedHeaders()
+          });
           if (res.ok) {
             response = await res.json();
             if (response.data?.items && response.data.items.length > 0) break;
@@ -218,7 +225,10 @@ class OtruyenService {
       let response: any;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, { cache: 'no-store' });
+          const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, {
+            cache: 'no-store',
+            headers: getRandomSpoofedHeaders()
+          });
           if (res.ok) {
             response = await res.json();
             if (response.data?.item) break;
@@ -262,7 +272,10 @@ class OtruyenService {
         let response: any;
         for (let i = 0; i < 3; i++) {
           try {
-            const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, { cache: 'no-store' });
+            const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, {
+              cache: 'no-store',
+              headers: getRandomSpoofedHeaders()
+            });
             if (res.ok) {
               response = await res.json();
               if (response.data?.item?.chapters) break;
@@ -280,13 +293,19 @@ class OtruyenService {
           const mangaTitle = response.data.item.name || '';
           if (mangaTitle) {
             try {
-              const searchRes = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(mangaTitle)}`, { cache: 'no-store' });
+              const searchRes = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(mangaTitle)}`, {
+                cache: 'no-store',
+                headers: getRandomSpoofedHeaders()
+              });
               if (searchRes.ok) {
                 const searchData = await searchRes.json();
                 const searchItems = searchData.data?.items || [];
                 for (const item of searchItems) {
                   if (item.slug !== slug) {
-                    const altRes = await fetch(`${this.baseUrl}/truyen-tranh/${item.slug}`, { cache: 'no-store' });
+                    const altRes = await fetch(`${this.baseUrl}/truyen-tranh/${item.slug}`, {
+                      cache: 'no-store',
+                      headers: getRandomSpoofedHeaders()
+                    });
                     if (altRes.ok) {
                       const altData = await altRes.json();
                       const altChapters = altData?.data?.item?.chapters || [];
@@ -363,7 +382,10 @@ class OtruyenService {
       let response: any;
       for (let i = 0; i < 3; i++) {
         try {
-          const res = await fetch(`https://sv1.otruyencdn.com/v1/api/chapter/${chapterId}`, { cache: 'no-store' });
+          const res = await fetch(`https://sv1.otruyencdn.com/v1/api/chapter/${chapterId}`, {
+            cache: 'no-store',
+            headers: getRandomSpoofedHeaders()
+          });
           if (res.ok) {
             response = await res.json();
             if (response.data?.item?.chapter_image) break;
@@ -396,7 +418,10 @@ class OtruyenService {
    */
   async getTags(): Promise<TagItem[]> {
     try {
-      const res = await fetch(`${this.baseUrl}/the-loai`, { cache: 'no-store' });
+      const res = await fetch(`${this.baseUrl}/the-loai`, {
+        cache: 'no-store',
+        headers: getRandomSpoofedHeaders()
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const response = await res.json();
 
@@ -443,11 +468,10 @@ class OtruyenService {
 
     try {
       const result = await fetch(decodedUrl, {
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        headers: getRandomSpoofedHeaders({
           'Referer': 'https://otruyenapi.com/',
           'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-        }
+        })
       });
       
       setTimeout(() => {
