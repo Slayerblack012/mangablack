@@ -68,8 +68,24 @@ class OtruyenService {
    */
   private parseManga(comic: any, basePath?: string): MangaItem {
     let cover = comic.thumb_url || comic.cover_url || '';
-    if (cover && !cover.startsWith('http') && basePath) {
-      cover = `${basePath}/${cover}`;
+    if (cover && !cover.startsWith('http')) {
+      if (basePath) {
+        // If the path already has "uploads/comics/", extract base domain to prevent duplicate folder nesting
+        const isStandardUpload = cover.startsWith('uploads/comics/') || cover.startsWith('/uploads/comics/');
+        if (isStandardUpload) {
+          try {
+            const domainUrl = new URL(basePath).origin;
+            const cleanPath = cover.startsWith('/') ? cover.slice(1) : cover;
+            cover = `${domainUrl}/${cleanPath}`;
+          } catch {
+            const cleanSlash = (basePath.endsWith('/') || cover.startsWith('/')) ? '' : '/';
+            cover = `${basePath}${cleanSlash}${cover}`;
+          }
+        } else {
+          const cleanSlash = (basePath.endsWith('/') || cover.startsWith('/')) ? '' : '/';
+          cover = `${basePath}${cleanSlash}${cover}`;
+        }
+      }
     }
     
     const genres: string[] = (comic.category || []).map((c: any) => c.name);
