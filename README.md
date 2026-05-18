@@ -53,7 +53,4 @@ Giao dien nen tang duoc thiet ke tu kien truc bong toi sang trong, mang lai cam 
 
 ---
 
-## Nguyen Tac Van Hanh Cua Nen Tang
-
-* **Bao mat doc gia**: Moi thong tin bookmarks va lich su duoc luu tru tuyet doi an toan ngay tren thiet bi ca nhan cua ban.
-* **Toi uu hoa he thong**: He thong luon dam bao su kin dao, khong lam ro thong tin nguon va giup doc gia van hanh tren mot duong truyen sach se, tron ven.
+Come and try.
