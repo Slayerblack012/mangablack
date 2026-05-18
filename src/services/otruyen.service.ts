@@ -1,21 +1,37 @@
-interface CacheEntry {
-  data: any;
-  expiry: number;
-}
+import { 
+  CacheEntry, 
+  MangaItem, 
+  BrowseMangaResponse, 
+  ChapterFeedResponse, 
+  ChapterPagesResponse, 
+  TagItem, 
+  BrowseOptions 
+} from './types';
 
+/**
+ * OtruyenService
+ * Direct crawler client interfacing with OTruyen Vietnamese Manga APIs.
+ * Supports smart cache bypass, local storage fallbacks, and concurrent image streaming gateways.
+ */
 class OtruyenService {
   private readonly baseUrl = 'https://otruyenapi.com/v1/api';
   private readonly cache = new Map<string, CacheEntry>();
-  private readonly DEFAULT_TTL = 24 * 3600 * 1000;
+  private readonly DEFAULT_TTL = 24 * 3600 * 1000; // 24 hours
   private readonly MAX_CACHE_SIZE = 1000;
+  
+  // Rate-limiting image proxy queue settings
   private activeProxyRequests = 0;
   private proxyQueue: (() => void)[] = [];
 
   constructor() {
+    // Schedule periodic cache purging
     setInterval(() => this.cleanupCache(), 3600 * 1000);
   }
 
-  private cleanupCache() {
+  /**
+   * Purge expired cache items
+   */
+  private cleanupCache(): void {
     const now = Date.now();
     for (const [key, entry] of this.cache.entries()) {
       if (entry.expiry < now) {
@@ -24,7 +40,10 @@ class OtruyenService {
     }
   }
 
-  private async getCached(key: string) {
+  /**
+   * Retrieve active cache entry if unexpired
+   */
+  private async getCached(key: string): Promise<any | null> {
     const entry = this.cache.get(key);
     if (entry && entry.expiry > Date.now()) {
       return entry.data;
@@ -33,7 +52,10 @@ class OtruyenService {
     return null;
   }
 
-  private setCache(key: string, data: any, ttl: number = this.DEFAULT_TTL) {
+  /**
+   * Store item in temporary crawler memory cache
+   */
+  private setCache(key: string, data: any, ttl: number = this.DEFAULT_TTL): void {
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
       const firstKey = this.cache.keys().next().value;
       if (firstKey) this.cache.delete(firstKey);
@@ -41,24 +63,19 @@ class OtruyenService {
     this.cache.set(key, { data, expiry: Date.now() + ttl });
   }
 
-  private buildQueryString(params: any): string {
-    const searchParams = new URLSearchParams();
-    for (const key in params) {
-      if (params[key] !== undefined) {
-        searchParams.append(key, String(params[key]));
-      }
-    }
-    return searchParams.toString();
-  }
-
-  private parseManga(comic: any, basePath?: string) {
+  /**
+   * Parses raw API data from OTruyen into unified MangaItem format
+   */
+  private parseManga(comic: any, basePath?: string): MangaItem {
     let cover = comic.thumb_url || comic.cover_url || '';
     if (cover && !cover.startsWith('http') && basePath) {
       cover = `${basePath}/${cover}`;
     }
-    const genres = (comic.category || []).map((c: any) => c.name);
+    
+    const genres: string[] = (comic.category || []).map((c: any) => c.name);
     const author = (comic.author && comic.author.length > 0 && comic.author[0] !== 'Đang cập nhật') 
-      ? comic.author.join(', ') : 'Unknown Author';
+      ? comic.author.join(', ') 
+      : 'Đang cập nhật';
 
     return {
       id: comic.slug,
@@ -72,17 +89,21 @@ class OtruyenService {
       genres,
       themes: [],
       author,
-      artist: 'Unknown Artist',
+      artist: 'Đang cập nhật',
     };
   }
 
-  async searchManga(title: string) {
+  /**
+   * Search manga by keywords
+   */
+  async searchManga(title: string): Promise<MangaItem[]> {
     const cacheKey = `otruyen-search-${title}`;
     const cached = await this.getCached(cacheKey);
     if (cached) return cached;
 
     try {
-      let response;
+      let response: any;
+      // Implement retry buffer
       for (let i = 0; i < 3; i++) {
         try {
           const res = await fetch(`${this.baseUrl}/tim-kiem?keyword=${encodeURIComponent(title)}`, { cache: 'no-store' });
@@ -97,25 +118,22 @@ class OtruyenService {
       if (!response || !response.data?.items) return [];
 
       const domain = response.data?.APP_DOMAIN_CDN_IMAGE || 'https://img.otruyenapi.com';
-      const path = (response.data.items || [])
+      const parsedList = (response.data.items || [])
         .map((item: any) => this.parseManga(item, `${domain}/uploads/comics`));
       
-      if (path.length > 0) {
-        this.setCache(cacheKey, path, 30 * 1000);
+      if (parsedList.length > 0) {
+        this.setCache(cacheKey, parsedList, 30 * 1000); // 30s search cache
       }
-      return path;
+      return parsedList;
     } catch {
       return [];
     }
   }
 
-  async browseManga(options: { 
-    offset?: number; 
-    limit?: number; 
-    order?: string; 
-    tags?: string[];
-    category?: string;
-  }) {
+  /**
+   * Browse lists of manga by categorizations/filters
+   */
+  async browseManga(options: BrowseOptions): Promise<BrowseMangaResponse> {
     const { offset = 0, limit = 24, order = 'popular', category } = options;
     const page = Math.floor(offset / limit) + 1;
 
@@ -135,7 +153,7 @@ class OtruyenService {
     }
 
     try {
-      let response;
+      let response: any;
       for (let i = 0; i < 3; i++) {
         try {
           const res = await fetch(`${this.baseUrl}/${endpoint}?page=${page}`, { cache: 'no-store' });
@@ -150,18 +168,18 @@ class OtruyenService {
       if (!response || !response.data?.items) throw new Error('API failed');
 
       const domain = response.data?.APP_DOMAIN_CDN_IMAGE || 'https://img.otruyenapi.com';
-      const parsed = (response.data.items || [])
+      const parsedList = (response.data.items || [])
         .map((item: any) => this.parseManga(item, `${domain}/uploads/comics`));
       
       const result = {
-        data: parsed,
+        data: parsedList,
         total: (response.data?.params?.pagination?.totalItems) || 1000,
         offset,
         limit,
       };
 
-      if (parsed.length > 0) {
-        this.setCache(cacheKey, result, 10 * 1000);
+      if (parsedList.length > 0) {
+        this.setCache(cacheKey, result, 10 * 1000); // 10s lists cache
       }
       return result;
     } catch {
@@ -169,7 +187,10 @@ class OtruyenService {
     }
   }
 
-  async getMangaDetail(slug: string, bypassCache: boolean = false) {
+  /**
+   * Fetch complete details of a comic by its slug
+   */
+  async getMangaDetail(slug: string, bypassCache: boolean = false): Promise<MangaItem | null> {
     const cacheKey = `otruyen-detail-${slug}`;
     if (bypassCache) {
       this.cache.delete(cacheKey);
@@ -178,7 +199,7 @@ class OtruyenService {
     if (cached) return cached;
 
     try {
-      let response;
+      let response: any;
       for (let i = 0; i < 3; i++) {
         try {
           const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, { cache: 'no-store' });
@@ -196,7 +217,7 @@ class OtruyenService {
       const parsed = this.parseManga(response.data.item, `${domain}/uploads/comics`);
       
       if (parsed) {
-        this.setCache(cacheKey, parsed, 15 * 1000);
+        this.setCache(cacheKey, parsed, 15 * 1000); // 15s cache
       }
       return parsed;
     } catch {
@@ -204,7 +225,16 @@ class OtruyenService {
     }
   }
 
-  async getChapterFeed(slug: string, offset: number = 0, limit: number = 100, order: 'asc' | 'desc' = 'asc', bypassCache: boolean = false) {
+  /**
+   * Retrieve list of chapters (deduplicated across different hosting servers)
+   */
+  async getChapterFeed(
+    slug: string, 
+    offset: number = 0, 
+    limit: number = 100, 
+    order: 'asc' | 'desc' = 'asc', 
+    bypassCache: boolean = false
+  ): Promise<ChapterFeedResponse> {
     const cacheKey = `otruyen-feed-v2-${slug}`;
     if (bypassCache) {
       this.cache.delete(cacheKey);
@@ -213,7 +243,7 @@ class OtruyenService {
     
     if (!cachedFeed) {
       try {
-        let response;
+        let response: any;
         for (let i = 0; i < 3; i++) {
           try {
             const res = await fetch(`${this.baseUrl}/truyen-tranh/${slug}`, { cache: 'no-store' });
@@ -229,7 +259,7 @@ class OtruyenService {
 
         let servers = response.data.item.chapters || [];
         
-        // --- SMART SEARCH FALLBACK FOR "0 CHAPTERS" BUG ---
+        // --- SMART ALT-TITLE SEARCH FALLBACK FOR "0 CHAPTERS" CRAWL BUG ---
         if (servers.length === 0 || (servers.length === 1 && (!servers[0].server_data || servers[0].server_data.length === 0))) {
           const mangaTitle = response.data.item.name || '';
           if (mangaTitle) {
@@ -258,16 +288,15 @@ class OtruyenService {
             }
           }
         }
-        // --------------------------------------------------
+        // ------------------------------------------------------------------
 
         const uniqueChaptersMap = new Map<string, any>();
         
-        // Gop toan bo chuong tu tat ca cac servers de tranh mat thong tin va dam bao lay day du 100%
+        // Merge chapters from all server CDN networks to prevent missing updates
         for (const srv of servers) {
           const srvData = srv.server_data || [];
           for (const ch of srvData) {
             if (!ch.chapter_name) continue;
-            // Neu chuong chua co hoac thieu du lieu api thi ghi de
             const existing = uniqueChaptersMap.get(ch.chapter_name);
             if (!existing || (!existing.chapter_api_data && ch.chapter_api_data)) {
               uniqueChaptersMap.set(ch.chapter_name, ch);
@@ -284,14 +313,14 @@ class OtruyenService {
           return {
             id: cleanId,
             chapter: ch.chapter_name,
-            title: ch.chapter_title || `Chapter ${ch.chapter_name}`,
+            title: ch.chapter_title || `Chương ${ch.chapter_name}`,
             lang: 'vi',
             group: 'Hệ Thống',
           };
         });
 
         cachedFeed = { chapters };
-        this.setCache(cacheKey, cachedFeed, 5 * 1000);
+        this.setCache(cacheKey, cachedFeed, 5 * 1000); // 5s short cache for feed sync
       } catch {
         return { data: [], total: 0, availableLanguages: ['vi'], offset, nextOffset: offset };
       }
@@ -310,10 +339,12 @@ class OtruyenService {
     };
   }
 
-  async getChapterPages(chapterId: string) {
+  /**
+   * Fetch chapter page asset URLs from CDN server
+   */
+  async getChapterPages(chapterId: string): Promise<ChapterPagesResponse> {
     try {
-      // API cua OTruyen dung CDN rieng de chua anh
-      let response;
+      let response: any;
       for (let i = 0; i < 3; i++) {
         try {
           const res = await fetch(`https://sv1.otruyencdn.com/v1/api/chapter/${chapterId}`, { cache: 'no-store' });
@@ -344,7 +375,10 @@ class OtruyenService {
     }
   }
 
-  async getTags() {
+  /**
+   * Fetch tags (the-loai list)
+   */
+  async getTags(): Promise<TagItem[]> {
     try {
       const res = await fetch(`${this.baseUrl}/the-loai`, { cache: 'no-store' });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -360,7 +394,10 @@ class OtruyenService {
     }
   }
 
-  async proxyImage(url: string) {
+  /**
+   * Proxy image streamer with strict domain whitelist & private address blocking
+   */
+  async proxyImage(url: string): Promise<Response> {
     if (!url) throw new Error('No URL provided');
     const decodedUrl = decodeURIComponent(url);
     const parsedUrl = new URL(decodedUrl);
@@ -380,6 +417,7 @@ class OtruyenService {
       throw new Error('Forbidden: Internal address');
     }
 
+    // Direct proxy queues to throttle requests under rate-limits
     if (this.activeProxyRequests >= 3) {
       await new Promise<void>(resolve => {
         this.proxyQueue.push(resolve);

@@ -1,23 +1,41 @@
-interface CacheEntry {
-  data: any;
-  expiry: number;
-}
+import { 
+  CacheEntry, 
+  MangaItem, 
+  BrowseMangaResponse, 
+  ChapterFeedResponse, 
+  ChapterPagesResponse, 
+  TagItem, 
+  BrowseOptions 
+} from './types';
 
+/**
+ * MangadexService
+ * Full integration engine for the official international MangaDex REST API.
+ * Employs automatic rate-limiting throttles, caching logic, and translation prioritization fallbacks.
+ */
 class MangadexService {
   private readonly baseUrl = 'https://api.mangadex.org';
   private readonly cache = new Map<string, CacheEntry>();
-  private readonly DEFAULT_TTL = 24 * 3600 * 1000;
+  private readonly DEFAULT_TTL = 24 * 3600 * 1000; // 24 hours
   private readonly MAX_CACHE_SIZE = 1000;
+  
+  // Throttle configs to protect client against MangaDex strict 5req/sec limit
   private lastRequestTime = 0;
   private readonly MIN_DELAY_MS = 200;
+  
+  // Concurrency controls for proxies
   private activeProxyRequests = 0;
   private proxyQueue: (() => void)[] = [];
 
   constructor() {
+    // Schedule periodic expired memory purges
     setInterval(() => this.cleanupCache(), 3600 * 1000);
   }
 
-  private cleanupCache() {
+  /**
+   * Remove expired cache mappings
+   */
+  private cleanupCache(): void {
     const now = Date.now();
     for (const [key, entry] of this.cache.entries()) {
       if (entry.expiry < now) {
@@ -26,7 +44,10 @@ class MangadexService {
     }
   }
 
-  private async getCached(key: string) {
+  /**
+   * Read cache entry
+   */
+  private async getCached(key: string): Promise<any | null> {
     const entry = this.cache.get(key);
     if (entry && entry.expiry > Date.now()) {
       return entry.data;
@@ -35,7 +56,10 @@ class MangadexService {
     return null;
   }
 
-  private setCache(key: string, data: any, ttl: number = this.DEFAULT_TTL) {
+  /**
+   * Write cache entry
+   */
+  private setCache(key: string, data: any, ttl: number = this.DEFAULT_TTL): void {
     if (this.cache.size >= this.MAX_CACHE_SIZE) {
       const firstKey = this.cache.keys().next().value;
       if (firstKey) this.cache.delete(firstKey);
@@ -43,7 +67,16 @@ class MangadexService {
     this.cache.set(key, { data, expiry: Date.now() + ttl });
   }
 
-  private async safeGet(url: string, params?: any, skipCache: boolean = false, ttl: number = this.DEFAULT_TTL, retryCount: number = 0): Promise<any> {
+  /**
+   * Helper that executes rate-limited HTTP GET requests with custom retries and backoff throttles.
+   */
+  private async safeGet(
+    url: string, 
+    params?: any, 
+    skipCache: boolean = false, 
+    ttl: number = this.DEFAULT_TTL, 
+    retryCount: number = 0
+  ): Promise<any> {
     const queryString = new URLSearchParams(this.flattenParams(params || {})).toString();
     const fullUrl = `${url}${queryString ? '?' + queryString : ''}`;
     const cacheKey = 'v2_' + fullUrl;
@@ -53,6 +86,7 @@ class MangadexService {
       if (cached) return cached;
     }
 
+    // Ensure throttle buffer
     const now = Date.now();
     const timeSinceLastRequest = now - this.lastRequestTime;
     if (timeSinceLastRequest < this.MIN_DELAY_MS) {
@@ -68,6 +102,7 @@ class MangadexService {
         }
       });
 
+      // Handle 429 rate limit responses gracefully
       if (response.status === 429) {
         const retryAfter = parseInt(response.headers.get('retry-after') || '5', 10);
         await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
@@ -90,19 +125,10 @@ class MangadexService {
     }
   }
 
+  /**
+   * Helper that formats query arrays to standard URL parameters
+   */
   private flattenParams(params: any): Record<string, string> {
-    const flat: Record<string, string> = {};
-    for (const key in params) {
-      if (Array.isArray(params[key])) {
-        params[key].forEach((val: any) => {
-          if (!flat[`${key}[]`]) flat[`${key}[]`] = val;
-          else flat[`${key}[]`] += `&${key}[]=${val}`; // Basic workaround for URLSearchParams with arrays
-        });
-      } else {
-        flat[key] = String(params[key]);
-      }
-    }
-    // Proper URLSearchParams array handling
     const entries: string[][] = [];
     for (const key in params) {
       if (Array.isArray(params[key])) {
@@ -111,9 +137,12 @@ class MangadexService {
         entries.push([key, String(params[key])]);
       }
     }
-    return Object.fromEntries(entries) as any; // Temporary fix, let's use the entries directly below
+    return Object.fromEntries(entries) as Record<string, string>;
   }
 
+  /**
+   * Generate URL queries
+   */
   private buildQueryString(params: any): string {
     const searchParams = new URLSearchParams();
     for (const key in params) {
@@ -126,6 +155,9 @@ class MangadexService {
     return searchParams.toString();
   }
 
+  /**
+   * Clean description fields by removing markdown links and boilerplate statements
+   */
   private cleanDescription(desc: string): string {
     if (!desc) return '';
     let cleaned = desc.split(/---\s*(?:\*\*|\[)?Links/i)[0];
@@ -145,7 +177,10 @@ class MangadexService {
     return cleaned.trim();
   }
 
-  private parseManga(manga: any) {
+  /**
+   * Parses raw API data from MangaDex into unified MangaItem format
+   */
+  private parseManga(manga: any): MangaItem {
     const coverRel = manga.relationships?.find((r: any) => r.type === 'cover_art');
     const authorRel = manga.relationships?.find((r: any) => r.type === 'author');
     const artistRel = manga.relationships?.find((r: any) => r.type === 'artist');
@@ -174,6 +209,14 @@ class MangadexService {
     let lastChap = manga.attributes?.lastChapter || manga.attributes?.latestUploadedChapter;
     if (lastChap && isUUID(lastChap)) lastChap = null;
 
+    const genres = (manga.attributes?.tags || [])
+      .filter((t: any) => t.attributes?.group === 'genre')
+      .map((t: any) => t.attributes?.name?.en).filter(Boolean);
+
+    const themes = (manga.attributes?.tags || [])
+      .filter((t: any) => t.attributes?.group === 'theme')
+      .map((t: any) => t.attributes?.name?.en).filter(Boolean);
+
     return {
       id: manga.id,
       title: title as string,
@@ -185,18 +228,17 @@ class MangadexService {
       lastVolume: manga.attributes?.lastVolume,
       coverUrl: fileName ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}.256.jpg` : '',
       coverUrlHQ: fileName ? `https://uploads.mangadex.org/covers/${manga.id}/${fileName}` : '',
-      genres: (manga.attributes?.tags || [])
-        .filter((t: any) => t.attributes?.group === 'genre')
-        .map((t: any) => t.attributes?.name?.en).filter(Boolean),
-      themes: (manga.attributes?.tags || [])
-        .filter((t: any) => t.attributes?.group === 'theme')
-        .map((t: any) => t.attributes?.name?.en).filter(Boolean),
+      genres,
+      themes,
       author: authorRel?.attributes?.name || 'Unknown Author',
       artist: artistRel?.attributes?.name || 'Unknown Artist',
     };
   }
 
-  async searchManga(title: string) {
+  /**
+   * Search manga by keyword title
+   */
+  async searchManga(title: string): Promise<MangaItem[]> {
     try {
       const qs = this.buildQueryString({
         title, 
@@ -212,15 +254,10 @@ class MangadexService {
     }
   }
 
-  async browseManga(options: { 
-    offset?: number; 
-    limit?: number; 
-    order?: string; 
-    status?: string; 
-    year?: number; 
-    tags?: string[];
-    category?: string;
-  }) {
+  /**
+   * Browse lists of manga by filters
+   */
+  async browseManga(options: BrowseOptions): Promise<BrowseMangaResponse> {
     try {
       const { offset = 0, limit = 24, order = 'popular', status, year, tags, category } = options;
       const params: any = {
@@ -263,7 +300,10 @@ class MangadexService {
     }
   }
 
-  async getMangaDetail(mangaDexId: string, bypassCache: boolean = false) {
+  /**
+   * Fetch comic details by ID
+   */
+  async getMangaDetail(mangaDexId: string, bypassCache: boolean = false): Promise<MangaItem | null> {
     try {
       const qs = this.buildQueryString({
         'includes[]': ['cover_art', 'author', 'artist'],
@@ -273,12 +313,22 @@ class MangadexService {
       }
       const data = await this.safeGet(`${this.baseUrl}/manga/${mangaDexId}?${qs}`, {}, bypassCache, 15 * 1000);
       return this.parseManga(data.data);
-    } catch (e: any) {
+    } catch {
       return null;
     }
   }
 
-  async getChapterFeed(mangaId: string, offset: number = 0, limit: number = 100, lang?: string, order: 'asc' | 'desc' = 'asc', bypassCache: boolean = false) {
+  /**
+   * Fetch chapter list feed (handles sorting, languages priority and deduplication)
+   */
+  async getChapterFeed(
+    mangaId: string, 
+    offset: number = 0, 
+    limit: number = 100, 
+    lang?: string, 
+    order: 'asc' | 'desc' = 'asc', 
+    bypassCache: boolean = false
+  ): Promise<ChapterFeedResponse> {
     const feedCacheKey = `feed-${mangaId}-${lang || 'all'}`;
     if (bypassCache) {
       this.cache.delete(feedCacheKey);
@@ -298,6 +348,7 @@ class MangadexService {
         let currentOffset = 0;
         let apiTotal = 0;
 
+        // Exhaustive feed loop to retrieve all updates
         do {
           const params: any = {
             limit: 100,
@@ -323,10 +374,10 @@ class MangadexService {
             id: ch.id,
             chapter: ch.attributes?.chapter,
             volume: ch.attributes?.volume,
-            title: ch.attributes?.title || (ch.attributes?.chapter ? `Chapter ${ch.attributes?.chapter}` : "Special"),
+            title: ch.attributes?.title || (ch.attributes?.chapter ? `Chương ${ch.attributes?.chapter}` : "Đặc biệt"),
             pages: ch.attributes?.pages || 0,
             lang: ch.attributes?.translatedLanguage,
-            group: ch.relationships?.find((r: any) => r.type === 'scanlation_group')?.attributes?.name || 'Scanlation Group',
+            group: ch.relationships?.find((r: any) => r.type === 'scanlation_group')?.attributes?.name || 'Vô Danh',
           }));
 
         const langCounts: Record<string, number> = {};
@@ -354,7 +405,8 @@ class MangadexService {
             if (!existing || ch.pages > existing.pages) uniqueChaptersMap.set(key, ch);
           });
         } else {
-          const langPriority: any = { 'vi': 3, 'en': 2 };
+          // Automatic Language Priority: Vietnamese -> English -> Other
+          const langPriority: Record<string, number> = { 'vi': 3, 'en': 2 };
           for (const ch of parsedChapters) {
             const key = ch.chapter ? `${ch.volume || 'v'}-${ch.chapter}` : `special-${ch.id}`;
             const existing = uniqueChaptersMap.get(key);
@@ -369,7 +421,7 @@ class MangadexService {
         filteredChapters = Array.from(uniqueChaptersMap.values());
         filteredChapters.sort((a, b) => (parseFloat(a.chapter) || 0) - (parseFloat(b.chapter) || 0));
         this.setCache(feedCacheKey, { chapters: filteredChapters, languages: availableLanguages }, 5 * 1000);
-      } catch (e: any) {
+      } catch {
         return { data: [], total: 0, availableLanguages: [], offset, nextOffset: offset };
       }
     }
@@ -387,7 +439,10 @@ class MangadexService {
     };
   }
 
-  async getChapterPages(chapterId: string) {
+  /**
+   * Fetch chapter page asset URLs from MangaDex At-Home server network
+   */
+  async getChapterPages(chapterId: string): Promise<ChapterPagesResponse> {
     try {
       const qs = this.buildQueryString({ forcePort443: true });
       const data = await this.safeGet(`${this.baseUrl}/at-home/server/${chapterId}?${qs}`, {}, false, 120 * 1000);
@@ -399,12 +454,15 @@ class MangadexService {
         dataSaver: (dataSaver || []).map((file: string) => `${host}/data-saver/${hash}/${file}`),
         fallbackActive: (files || []).length === 0
       };
-    } catch (e: any) {
+    } catch {
       return { quality: [], dataSaver: [], fallbackActive: false };
     }
   }
 
-  async getTags() {
+  /**
+   * Fetch tag definitions
+   */
+  async getTags(): Promise<TagItem[]> {
     try {
       const data = await this.safeGet(`${this.baseUrl}/manga/tag`);
       return (data.data || []).map((tag: any) => ({
@@ -412,12 +470,15 @@ class MangadexService {
         name: tag.attributes?.name?.en || 'Unknown Tag',
         group: tag.attributes?.group,
       }));
-    } catch (e: any) {
+    } catch {
       return [];
     }
   }
 
-  async proxyImage(url: string) {
+  /**
+   * Whitelisted proxy client ensuring private IP addresses block and secure image stream
+   */
+  async proxyImage(url: string): Promise<Response> {
     if (!url) throw new Error('No URL provided');
     const decodedUrl = decodeURIComponent(url);
     const parsedUrl = new URL(decodedUrl);
